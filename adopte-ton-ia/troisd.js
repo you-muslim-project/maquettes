@@ -242,11 +242,25 @@ function dessinerEcran(ctx, { temps, etapeLissee }) {
 }
 
 // ---------- Dev sur son anneau ----------
-// Retour de Youness (17/11) : Dev ne traverse plus le bureau. Il lévite au-dessus du plateau, son anneau sous les pieds,
-// et passe lentement d'un côté à l'autre devant l'écran ; à chaque arrêt il présente l'écran de la main qui est du côté de l'écran.
-const POSES = ['montre-droite', 'montre-gauche', 'vol-droite', 'vol-gauche'];
+// Retour de Youness (17/11) : Dev ne traverse plus le bureau. Il lévite au-dessus du plateau, son anneau sous les pieds.
+// Second retour (17/11, soir) : plus de variété. Il enchaîne des mouvements différents, jamais deux fois le même de suite :
+// vol vers la droite, présentation main gauche, téléportation, salut, frappe au clavier (de dos, comme dans l'appli),
+// téléportation, pouce, vol vers la gauche, présentation main droite. Il présente l'écran avec la main du côté de l'écran.
+const POSES = ['montre-droite', 'montre-gauche', 'vol-droite', 'vol-gauche', 'salut', 'pouce', 'dos'];
+const SEQUENCE = [   // u : 0 = à gauche de l'écran, 1 = à droite, 0.5 = devant le clavier
+  { type: 'pose', pose: 'montre-droite', u: 0, duree: 4.5 },
+  { type: 'vol', de: 0, a: 1, duree: 3 },
+  { type: 'pose', pose: 'montre-gauche', u: 1, duree: 4.5 },
+  { type: 'tele', de: 1, a: 0, duree: 1.6, arrivee: 'salut' },
+  { type: 'pose', pose: 'salut', u: 0, duree: 2.4 },
+  { type: 'vol', de: 0, a: 0.5, duree: 2, versClavier: true },
+  { type: 'clavier', u: 0.5, duree: 5 },
+  { type: 'tele', de: 0.5, a: 1, duree: 1.6, arrivee: 'pouce' },
+  { type: 'pose', pose: 'pouce', u: 1, duree: 2.4 },
+  { type: 'vol', de: 1, a: 0, duree: 3 },
+];
+const CYCLE = SEQUENCE.reduce((s, e) => s + e.duree, 0);
 let dev = null, M = null;
-const CYCLE = 18, ARRET = 6, TRAJET = 3;   // secondes : arrêt à gauche, trajet, arrêt à droite, trajet
 
 function construire({ THREE, scene, racine }) {
   const b = new THREE.Box3().setFromObject(racine.getObjectByName('o_ecran'));
@@ -264,7 +278,7 @@ function construire({ THREE, scene, racine }) {
     const p = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), m); p.renderOrder = 5; groupe.add(p); return p;
   });
   // anneau cyan + halo, sous ses pieds : ils suivent Dev partout
-  const anneau = new THREE.Mesh(new THREE.TorusGeometry(0.12, 0.009, 16, 80), new THREE.MeshBasicMaterial({ color: 0x34d8ff }));
+  const anneau = new THREE.Mesh(new THREE.TorusGeometry(0.12, 0.009, 16, 80), new THREE.MeshBasicMaterial({ color: 0x34d8ff, transparent: true }));
   anneau.rotation.x = Math.PI / 2; anneau.renderOrder = 6; groupe.add(anneau);
   const c = document.createElement('canvas'); c.width = c.height = 128;
   const g = c.getContext('2d'); const d = g.createRadialGradient(64, 64, 10, 64, 64, 64);
@@ -272,45 +286,81 @@ function construire({ THREE, scene, racine }) {
   g.fillStyle = d; g.fillRect(0, 0, 128, 128);
   const halo = new THREE.Mesh(new THREE.PlaneGeometry(0.4, 0.4), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
   halo.rotation.x = -Math.PI / 2; halo.renderOrder = 4; groupe.add(halo);
-  dev = { groupe, plans, anneau, halo, tex, pose: 'montre-droite', fondu: 1, plateau, gauche: cx - demi - 0.1, droite: cx + demi + 0.1 };
+  // colonne de lumière de la téléportation (invisible le reste du temps)
+  const colonne = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.12, 0.42, 32, 1, true),
+    new THREE.MeshBasicMaterial({ color: 0x34d8ff, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide }));
+  colonne.position.y = 0.2; colonne.renderOrder = 7; groupe.add(colonne);
+  // pour taper, il se place DEVANT le clavier (côté visiteur), le dos tourné vers nous, toujours au-dessus du plateau
+  const k = new THREE.Box3().setFromObject(racine.getObjectByName('o_clavier'));
+  dev = { groupe, plans, anneau, halo, colonne, tex, pose: 'montre-droite', fondu: 1, plateau, gauche: cx - demi - 0.1, droite: cx + demi + 0.1,
+    centre: (k.min.x + k.max.x) / 2, z, zClavier: k.max.z + 0.15 };
   window.__dev = dev;
 }
 const LEVITE = 0.07;   // hauteur de l'anneau au-dessus du plateau
 
-// où est Dev dans son cycle : position (0 = à gauche de l'écran, 1 = à droite) et pose
+// où est Dev dans la séquence : position u, pose, visibilité (téléportation), frappe au clavier
 function cycle(temps) {
-  const t = ((temps - 2.2) % CYCLE + CYCLE) % CYCLE;
-  if (temps < 2.2 || t < ARRET) return { u: 0, pose: 'montre-droite' };
-  if (t < ARRET + TRAJET) return { u: lisse((t - ARRET) / TRAJET), pose: 'vol-droite' };
-  if (t < 2 * ARRET + TRAJET) return { u: 1, pose: 'montre-gauche' };
-  return { u: 1 - lisse((t - 2 * ARRET - TRAJET) / TRAJET), pose: 'vol-gauche' };
+  if (temps < 2.2) return { u: 0, pose: 'montre-droite', vis: 1, frappe: false, vol: 0 };
+  let t = ((temps - 2.2) % CYCLE + CYCLE) % CYCLE;
+  for (const e of SEQUENCE) {
+    if (t >= e.duree) { t -= e.duree; continue; }
+    const k = t / e.duree;
+    if (e.type === 'pose') return { u: e.u, pose: e.pose, vis: 1, frappe: false, vol: 0 };
+    if (e.type === 'clavier') return { u: e.u, pose: 'dos', vis: 1, frappe: true, vol: 0, avant: 1 };
+    if (e.type === 'vol') return { u: e.de + (e.a - e.de) * lisse(k), pose: e.a > e.de ? 'vol-droite' : 'vol-gauche', vis: 1, frappe: false, vol: Math.sin(Math.PI * k), avant: e.versClavier ? lisse(k) : 0 };
+    // téléportation : il se dissout en lumière d'un côté, puis se reforme de l'autre
+    if (k < 0.5) return { u: e.de, pose: null, vis: 1 - lisse(k / 0.5), frappe: false, vol: 0, avant: e.de === 0.5 ? 1 : 0 };
+    return { u: e.a, pose: e.arrivee, vis: lisse((k - 0.5) / 0.5), frappe: false, vol: 0, apparait: true };
+  }
+  return { u: 0, pose: 'montre-droite', vis: 1, frappe: false, vol: 0 };
+}
+
+function posX(u) {
+  if (u <= 0.5) return dev.gauche + (dev.centre - dev.gauche) * (u / 0.5);
+  return dev.centre + (dev.droite - dev.centre) * ((u - 0.5) / 0.5);
 }
 
 function animerDev({ temps }) {
   if (!dev || !M) return;
-  const { u, pose } = cycle(temps);
+  const { u, pose, vis, frappe, vol, apparait, avant = 0 } = cycle(temps);
   const [a, b] = dev.plans;
-  if (pose !== dev.pose) { a.material.map = b.material.map; a.material.opacity = 1; b.material.map = dev.tex[pose]; b.material.needsUpdate = true; a.material.needsUpdate = true; dev.pose = pose; dev.fondu = 0; }
+  if (pose && pose !== dev.pose) {
+    a.material.map = b.material.map; b.material.map = dev.tex[pose]; b.material.needsUpdate = true; a.material.needsUpdate = true;
+    dev.pose = pose; dev.fondu = apparait ? 1 : 0;   // à la réapparition, pas de fondu entre deux poses
+  }
   dev.fondu = Math.min(1, dev.fondu + 0.045);
-  a.material.opacity = 1 - dev.fondu; b.material.opacity = dev.fondu;
+  a.material.opacity = (1 - dev.fondu) * vis; b.material.opacity = dev.fondu * vis;
   const img = b.material.map.image;
   const ratio = img && img.width ? img.width / img.height : 1;
   const h = 0.3;
   // flottement lent : tout le groupe (Dev + anneau) monte et descend ensemble, toujours au-dessus du plateau
   const flotte = Math.sin(temps * 1.4) * 0.012;
   const g = dev.groupe.position;
-  g.x = dev.gauche + (dev.droite - dev.gauche) * u;
+  g.x = posX(u);
+  g.z = dev.z + (dev.zClavier - dev.z) * avant;
   g.y = dev.plateau + LEVITE + flotte;
-  const penche = pose.startsWith('vol') ? Math.sin(Math.PI * u) * 0.025 : 0;   // il monte un peu pendant le trajet
-  for (const p of dev.plans) { p.scale.set(h * ratio, h, 1); p.position.y = 0.025 + penche + h / 2; }
+  const monte = vol * 0.025;   // il monte un peu pendant le vol
+  // frappe au clavier : petits rebonds rapides et léger balancement, comme les deux bras qui tapent
+  const rebond = frappe ? Math.abs(Math.sin(temps * 15)) * 0.007 : 0;
+  const balance = frappe ? Math.sin(temps * 7.5) * 0.035 : 0;
+  // téléportation : il s'étire en lumière et s'amincit
+  const fin = 0.12 + 0.88 * vis, etire = 1 + (1 - vis) * 0.5;
+  for (const p of dev.plans) {
+    p.scale.set(h * ratio * fin, h * etire, 1);
+    p.position.y = 0.025 + monte + rebond + (h * etire) / 2;
+    p.rotation.z = balance;
+  }
   // toujours face à la caméra (rotation autour de la verticale seulement)
   const cam = M.camera.position;
   const ry = Math.atan2(cam.x - g.x, cam.z - g.z);
   for (const p of dev.plans) p.rotation.y = ry;
   dev.groupe.scale.setScalar(Math.max(0.001, lisse((temps - 1.0) / 0.7)));   // Dev arrive après les meubles
   const pul = 1 + Math.sin(temps * 2.4) * 0.05;
-  dev.anneau.scale.setScalar(pul); dev.anneau.position.y = 0;
-  dev.halo.position.y = -0.002; dev.halo.scale.setScalar(pul);
+  dev.anneau.scale.setScalar(pul * (1 + (1 - vis) * 0.9)); dev.anneau.position.y = 0;
+  dev.anneau.material.opacity = 0.35 + 0.65 * vis;
+  dev.halo.position.y = -0.002; dev.halo.scale.setScalar(pul * (1 + (1 - vis) * 0.8));
+  dev.colonne.material.opacity = Math.sin(Math.PI * (1 - vis)) * 0.45;
+  dev.colonne.scale.set(1, 0.4 + 0.6 * (1 - vis), 1);
 }
 
 // ---------- plans de caméra (une étape = un plan) ----------
