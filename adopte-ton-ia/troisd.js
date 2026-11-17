@@ -242,55 +242,75 @@ function dessinerEcran(ctx, { temps, etapeLissee }) {
 }
 
 // ---------- Dev sur son anneau ----------
-const POSES = ['montre-droite', 'montre-droite', 'feuille', 'reflechit', 'appareil'];
+// Retour de Youness (17/11) : Dev ne traverse plus le bureau. Il lévite au-dessus du plateau, son anneau sous les pieds,
+// et passe lentement d'un côté à l'autre devant l'écran ; à chaque arrêt il présente l'écran de la main qui est du côté de l'écran.
+const POSES = ['montre-droite', 'montre-gauche', 'vol-droite', 'vol-gauche'];
 let dev = null, M = null;
+const CYCLE = 18, ARRET = 6, TRAJET = 3;   // secondes : arrêt à gauche, trajet, arrêt à droite, trajet
 
 function construire({ THREE, scene, racine }) {
   const b = new THREE.Box3().setFromObject(racine.getObjectByName('o_ecran'));
-  const haut = b.min.y - 0.12;   // dessus du plateau (le socle de l'écran y repose)
+  const plateau = b.min.y;   // le socle de l'écran repose sur le plateau
   const charge = new THREE.TextureLoader();
   const tex = {};
-  for (const p of new Set(POSES)) { const t = charge.load(`images/dev-${p}.webp`); t.colorSpace = THREE.SRGBColorSpace; tex[p] = t; }
+  for (const p of POSES) { const t = charge.load(`images/dev-${p}.webp`); t.colorSpace = THREE.SRGBColorSpace; tex[p] = t; }
   const groupe = new THREE.Group();
-  groupe.position.set(b.min.x - 0.24, haut, (b.min.z + b.max.z) / 2 + 0.16);
+  const cx = (b.min.x + b.max.x) / 2, demi = (b.max.x - b.min.x) / 2;
+  const z = b.max.z + 0.2;   // devant l'écran, au-dessus du clavier
+  groupe.position.set(cx - demi - 0.1, plateau + LEVITE, z);
   scene.add(groupe);
   const plans = [0, 1].map(() => {
     const m = new THREE.MeshBasicMaterial({ map: tex['montre-droite'], transparent: true, depthWrite: false, opacity: 1 });
     const p = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), m); p.renderOrder = 5; groupe.add(p); return p;
   });
-  // anneau cyan + halo
-  const anneau = new THREE.Mesh(new THREE.TorusGeometry(0.15, 0.011, 16, 80), new THREE.MeshBasicMaterial({ color: 0x34d8ff }));
-  anneau.rotation.x = Math.PI / 2; groupe.add(anneau);
+  // anneau cyan + halo, sous ses pieds : ils suivent Dev partout
+  const anneau = new THREE.Mesh(new THREE.TorusGeometry(0.12, 0.009, 16, 80), new THREE.MeshBasicMaterial({ color: 0x34d8ff }));
+  anneau.rotation.x = Math.PI / 2; anneau.renderOrder = 6; groupe.add(anneau);
   const c = document.createElement('canvas'); c.width = c.height = 128;
   const g = c.getContext('2d'); const d = g.createRadialGradient(64, 64, 10, 64, 64, 64);
   d.addColorStop(0, 'rgba(52,216,255,.55)'); d.addColorStop(0.55, 'rgba(52,216,255,.18)'); d.addColorStop(1, 'rgba(52,216,255,0)');
   g.fillStyle = d; g.fillRect(0, 0, 128, 128);
-  const halo = new THREE.Mesh(new THREE.PlaneGeometry(0.5, 0.5), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
+  const halo = new THREE.Mesh(new THREE.PlaneGeometry(0.4, 0.4), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
   halo.rotation.x = -Math.PI / 2; halo.renderOrder = 4; groupe.add(halo);
-  dev = { groupe, plans, anneau, halo, tex, pose: 'montre-droite', fondu: 1, haut };
+  dev = { groupe, plans, anneau, halo, tex, pose: 'montre-droite', fondu: 1, plateau, gauche: cx - demi - 0.1, droite: cx + demi + 0.1 };
+  window.__dev = dev;
+}
+const LEVITE = 0.07;   // hauteur de l'anneau au-dessus du plateau
+
+// où est Dev dans son cycle : position (0 = à gauche de l'écran, 1 = à droite) et pose
+function cycle(temps) {
+  const t = ((temps - 2.2) % CYCLE + CYCLE) % CYCLE;
+  if (temps < 2.2 || t < ARRET) return { u: 0, pose: 'montre-droite' };
+  if (t < ARRET + TRAJET) return { u: lisse((t - ARRET) / TRAJET), pose: 'vol-droite' };
+  if (t < 2 * ARRET + TRAJET) return { u: 1, pose: 'montre-gauche' };
+  return { u: 1 - lisse((t - 2 * ARRET - TRAJET) / TRAJET), pose: 'vol-gauche' };
 }
 
-function animerDev({ temps, etape }) {
+function animerDev({ temps }) {
   if (!dev || !M) return;
-  const k = Math.max(0, Math.min(4, Math.round(etape)));
-  const voulu = POSES[k];
+  const { u, pose } = cycle(temps);
   const [a, b] = dev.plans;
-  if (voulu !== dev.pose) { b.material.map = dev.tex[voulu]; b.material.needsUpdate = true; dev.pose = voulu; dev.fondu = 0; }
-  dev.fondu = Math.min(1, dev.fondu + 0.06);
+  if (pose !== dev.pose) { a.material.map = b.material.map; a.material.opacity = 1; b.material.map = dev.tex[pose]; b.material.needsUpdate = true; a.material.needsUpdate = true; dev.pose = pose; dev.fondu = 0; }
+  dev.fondu = Math.min(1, dev.fondu + 0.045);
   a.material.opacity = 1 - dev.fondu; b.material.opacity = dev.fondu;
-  if (dev.fondu >= 1 && a.material.map !== b.material.map) { a.material.map = b.material.map; a.material.needsUpdate = true; }
   const img = b.material.map.image;
-  const ratio = img && img.width ? img.width / img.height : 0.75;
-  const h = 0.42;
-  for (const p of dev.plans) { p.scale.set(h * ratio, h, 1); p.position.y = 0.05 + h / 2 + Math.sin(temps * 1.7) * 0.018; }
+  const ratio = img && img.width ? img.width / img.height : 1;
+  const h = 0.3;
+  // flottement lent : tout le groupe (Dev + anneau) monte et descend ensemble, toujours au-dessus du plateau
+  const flotte = Math.sin(temps * 1.4) * 0.012;
+  const g = dev.groupe.position;
+  g.x = dev.gauche + (dev.droite - dev.gauche) * u;
+  g.y = dev.plateau + LEVITE + flotte;
+  const penche = pose.startsWith('vol') ? Math.sin(Math.PI * u) * 0.025 : 0;   // il monte un peu pendant le trajet
+  for (const p of dev.plans) { p.scale.set(h * ratio, h, 1); p.position.y = 0.025 + penche + h / 2; }
   // toujours face à la caméra (rotation autour de la verticale seulement)
-  const cam = M.camera.position, g = dev.groupe.position;
+  const cam = M.camera.position;
   const ry = Math.atan2(cam.x - g.x, cam.z - g.z);
   for (const p of dev.plans) p.rotation.y = ry;
   dev.groupe.scale.setScalar(Math.max(0.001, lisse((temps - 1.0) / 0.7)));   // Dev arrive après les meubles
   const pul = 1 + Math.sin(temps * 2.4) * 0.05;
-  dev.anneau.scale.setScalar(pul); dev.anneau.position.y = 0.03 + Math.sin(temps * 1.7) * 0.01;
-  dev.halo.position.y = 0.028; dev.halo.scale.setScalar(pul);
+  dev.anneau.scale.setScalar(pul); dev.anneau.position.y = 0;
+  dev.halo.position.y = -0.002; dev.halo.scale.setScalar(pul);
 }
 
 // ---------- plans de caméra (une étape = un plan) ----------
@@ -302,12 +322,12 @@ const plans = {
     { pos: [0.75, 1.15, 1.2], cible: [-0.02, 1.02, -0.18] },
     { pos: [0.4, 1.42, 2.1], cible: [0.06, 1.0, -0.15] },
   ],
-  telephone: [
-    { pos: [0.45, 1.05, 3.0], cible: [-0.3, 1.42, -0.1] },
-    { pos: [0.1, 1.15, 2.75], cible: [-0.42, 0.98, -0.18] },
-    { pos: [-0.75, 1.2, 2.6], cible: [-0.42, 0.98, -0.15] },
-    { pos: [0.35, 1.1, 2.6], cible: [-0.4, 0.98, -0.18] },
-    { pos: [-0.15, 1.3, 2.8], cible: [-0.42, 0.98, -0.15] },
+  telephone: [   // reculés le 17/11 (retour de Youness) : l'écran entier, Dev et le bureau restent visibles au-dessus des cartes
+    { pos: [1.334, 1.605, 4.429], cible: [-0.04, 0.14, -0.15] },
+    { pos: [1.141, 1.834, 3.919], cible: [-0.08, 0.41, -0.15] },
+    { pos: [-1.467, 1.764, 3.718], cible: [0.08, 0.41, -0.15] },
+    { pos: [0.819, 1.612, 4.143], cible: [-0.04, 0.41, -0.15] },
+    { pos: [-0.393, 2.141, 4.177], cible: [0.04, 0.41, -0.15] },
   ],
 };
 
@@ -333,6 +353,7 @@ try {
   // l'écran est une image qui s'allume : pas d'ombre, pas d'éclairage
   const e = M.scene.getObjectByName('ecran_moniteur');
   if (e) { e.material.map.center.set(0.5, 0.5); e.material.map.repeat.set(1, -1); e.material.emissiveMap = e.material.map; e.material.emissive.set(0xffffff); e.material.emissiveIntensity = 0.85; e.material.needsUpdate = true; e.castShadow = false; }
+  window.__M = M;
   document.documentElement.classList.add('trois-pret');
 } catch (err) {
   console.warn('3D indisponible', err);
