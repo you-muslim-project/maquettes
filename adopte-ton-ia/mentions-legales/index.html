@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mentions légales | Adopte ton IA</title>
+<link rel="icon" type="image/webp" href="/images/logo-adopte-ton-ia.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600&family=Parkinsans:wght@600..800&display=swap" rel="stylesheet">
+<style>
+  :root { --fond: #F4EDE2; --alt: #ECE1CF; --filet: #D6C8B3; --texte: #12273C; --doux: #4E5D6C; --lien: #08698C; --cyan: #34D8FF; --sable: #C5B5A0; --creme: #EADFCC; --rayon: 14px; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fond); color: var(--texte); font: 400 17px/1.65 Figtree, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: var(--lien); text-underline-offset: 3px; }
+  a:hover { color: #12273C; }
+  :focus-visible { outline: 3px solid var(--lien); outline-offset: 3px; border-radius: 6px; }
+  img { max-width: 100%; }
+  h1, h2 { font-family: Parkinsans, Figtree, system-ui, sans-serif; font-weight: 700; letter-spacing: -0.02em; text-wrap: balance; margin: 0; }
+  p, li { text-wrap: pretty; }
+  .conteneur { max-width: 1228px; margin: 0 auto; padding: 0 24px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 50px; padding: 0 24px; border-radius: var(--rayon); font: 600 16px/1.2 Figtree, system-ui, sans-serif; text-decoration: none; cursor: pointer; border: 1.5px solid transparent; }
+  .btn-principal { background: #12273C; color: #F4EDE2; border: 2px solid var(--cyan); box-shadow: 0 6px 18px rgba(18, 39, 60, .18); }
+  .btn-principal:hover { background: #1C3A57; color: #F4EDE2; }
+  .btn-contour { border-color: var(--texte); color: var(--texte); background: transparent; }
+  .btn-contour:hover { background: rgba(18, 39, 60, .06); color: var(--texte); }
+  .entete-site { position: sticky; top: 0; z-index: 50; background: rgba(234, 223, 204, .95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--sable); }
+  .entete-in { display: flex; align-items: center; gap: 28px; min-height: 68px; position: relative; }
+  .marque { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--texte); margin-right: auto; min-height: 44px; }
+  .marque:hover { color: var(--texte); }
+  .marque .logo-marque { width: 34px; height: 34px; display: block; flex: none; }
+  .marque strong { font-family: Parkinsans, Figtree, system-ui, sans-serif; font-weight: 700; font-size: 20px; }
+  .marque small { color: var(--doux); font-size: 13px; margin-left: 6px; }
+  .menu { display: flex; gap: 4px; }
+  .menu a { color: var(--texte); text-decoration: none; font-size: 15px; padding: 10px 12px; border-radius: 10px; white-space: nowrap; }
+  .menu a:hover { color: var(--lien); }
+  .entete-in .btn { min-height: 44px; padding: 0 18px; font-size: 15px; white-space: nowrap; }
+  .burger { display: none; width: 48px; height: 48px; border: 1px solid var(--filet); border-radius: 12px; background: transparent; color: var(--texte); cursor: pointer; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
+  .burger span { display: block; width: 20px; height: 2px; background: currentColor; border-radius: 2px; }
+  .ouvert .burger span:first-child { transform: translateY(4px) rotate(45deg); }
+  .ouvert .burger span:last-child { transform: translateY(-4px) rotate(-45deg); }
+  @media (max-width: 1180px) { .marque small { display: none; } }
+  @media (max-width: 1100px) {
+    .burger { display: inline-flex; }
+    .menu { display: none; position: absolute; left: 0; right: 0; top: 100%; flex-direction: column; background: #F4EDE2; border-bottom: 1px solid var(--sable); padding: 8px 16px 16px; }
+    .ouvert .menu { display: flex; }
+    .menu a { padding: 14px 12px; font-size: 17px; }
+    .entete-in { gap: 12px; }
+  }
+  @media (max-width: 760px) { .entete-in .btn { display: none; } .conteneur { padding: 0 16px; } }
+  .legal { max-width: calc(68ch + 48px); margin: 0 auto; padding: 72px 24px 96px; }
+  .legal h1 { font-size: clamp(32px, 4.4vw, 48px); line-height: 1.08; }
+  .legal .maj { margin: 14px 0 48px; font-size: 14px; color: var(--doux); padding-bottom: 28px; border-bottom: 1px solid var(--filet); }
+  .legal h2 { font-size: clamp(21px, 2vw, 25px); line-height: 1.25; margin: 48px 0 14px; }
+  .legal .maj + h2 { margin-top: 0; }
+  .legal p { margin: 0 0 16px; }
+  .legal ul { margin: 0 0 16px; padding-left: 1.3em; }
+  .legal li { margin: 0 0 10px; padding-left: .2em; }
+  .legal li::marker { color: var(--sable); }
+  .legal a { overflow-wrap: anywhere; }
+  .legal section[lang="en"] { margin-top: 56px; padding-top: 8px; border-top: 1px solid var(--filet); }
+  .tableau { margin: 8px 0 24px; overflow-x: auto; border: 1px solid var(--filet); border-radius: var(--rayon); background: #F9F4EC; }
+  .tableau table { width: 100%; border-collapse: collapse; font-size: 16px; }
+  .tableau th, .tableau td { text-align: left; padding: 13px 18px; border-bottom: 1px solid var(--filet); vertical-align: top; }
+  .tableau thead th { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--doux); background: var(--alt); }
+  .tableau tbody tr:last-child th, .tableau tbody tr:last-child td { border-bottom: 0; }
+  .tableau tbody th { font-family: Parkinsans, Figtree, system-ui, sans-serif; font-weight: 700; }
+  @media (max-width: 480px) { .legal { padding: 48px 16px 72px; } .tableau th, .tableau td { padding: 11px 12px; } .tableau table { font-size: 15px; } }
+  .pied { border-top: 1px solid var(--filet); padding: 32px 0; font-size: 15px; color: var(--doux); }
+  .pied .conteneur { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; align-items: center; }
+  .pied nav { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: center; }
+  .pied a { color: var(--doux); text-decoration: none; padding: 10px 8px; }
+  .pied a:hover { color: var(--lien); }
+  .pied a[aria-current="page"] { color: var(--texte); text-decoration: underline; text-decoration-color: var(--sable); }
+  .pied a.pied-wa { min-height: 44px; padding: 0 18px; gap: 8px; font-size: 15px; color: var(--texte); white-space: nowrap; }
+  .pied a.pied-wa:hover { color: var(--texte); }
+  .pied a.pied-wa svg { flex: none; }
+</style>
+<meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+
+<header class="entete-site" id="entete">
+  <div class="conteneur entete-in">
+    <a class="marque" href="/"><img class="logo-marque" src="/images/logo-adopte-ton-ia.webp" width="34" height="34" alt=""><span><strong>Adopte ton IA</strong><small>par AMD Project</small></span></a>
+    <nav class="menu" id="menu" aria-label="Menu principal">
+      <a href="/#ce-qu-il-fait">Ce qu'il fait</a>
+      <a href="/#comment">Comment ça marche</a>
+      <a href="/#prix">Prix</a>
+      <a href="/#questions">Questions</a>
+    </nav>
+    <a class="btn btn-principal" href="/#prix">Essayer 7 jours</a>
+    <button class="burger" type="button" aria-expanded="false" aria-controls="menu" aria-label="Ouvrir le menu"><span></span><span></span></button>
+  </div>
+</header>
+
+<main class="legal">
+<h1>Mentions légales</h1>
+<p class="maj">Dernière mise à jour : 5 novembre 2026</p>
+<h2>Éditeur du site</h2>
+<p>Le site amd-project.fr et l'application Adopte ton IA sont édités par AMD-PROJECT LLC, société de type Limited Liability Company (LLC), formée le 9 janvier 2023 dans l'État du Nouveau-Mexique, États-Unis.</p>
+<p>Numéro d'identification d'entité (Entity ID) : 7072864.</p>
+<p>Siège social : 8206 Louisiana Blvd NE, Ste A #1560, Albuquerque, Nouveau-Mexique 87113, États-Unis.</p>
+<p>Directeur de la publication : Youness Rachidi.</p>
+<p>Contact : <a href="mailto:contact@amd-project.fr">contact@amd-project.fr</a>, +212 659 41 47 74.</p>
+<h2>Hébergement</h2>
+<p>Le site est hébergé par Netlify, Inc., 101 2nd Street, San Francisco, CA 94105, États-Unis, www.netlify.com.</p>
+<p>Le serveur de licences et la page de paiement (licences.amd-project.fr) sont hébergés par Infomaniak, en Suisse, www.infomaniak.com.</p>
+<h2>Propriété intellectuelle</h2>
+<p>L'ensemble des contenus de ce site (textes, visuels, mascotte Dev, logo, structure) est la propriété d'AMD-PROJECT LLC, sauf mention contraire. Toute reproduction, représentation ou diffusion, totale ou partielle, sans autorisation écrite préalable est interdite.</p>
+<h2>Responsabilité</h2>
+<p>AMD-PROJECT LLC s'efforce d'assurer l'exactitude des informations publiées sur ce site, sans pouvoir la garantir de manière absolue. Les démonstrations de la page d'accueil sont des mises en scène : les noms, les entreprises et les chiffres qu'elles montrent sont des exemples. Le site contient des liens vers des services tiers (Calendly pour réserver un appel, WhatsApp pour nous écrire, PayPal pour le paiement) dont le contenu n'engage pas AMD-PROJECT LLC.</p>
+<h2>Données personnelles et conditions de vente</h2>
+<p>Le traitement des données personnelles est décrit dans la politique de confidentialité. L'abonnement à Adopte ton IA est régi par les conditions de vente.</p>
+</main>
+
+<footer class="pied">
+  <div class="conteneur">
+    <span>AMD-PROJECT LLC</span>
+    <nav aria-label="Liens légaux">
+      <a href="/mentions-legales/" aria-current="page">Mentions légales</a>
+      <a href="/confidentialite/">Confidentialité</a>
+      <a href="/conditions-de-vente/">Conditions de vente</a>
+      <a class="btn btn-contour pied-wa" href="https://wa.me/212659414774?text=Bonjour%2C%20je%20viens%20du%20site%20Adopte%20ton%20IA." target="_blank" rel="noopener" data-champ="lien-contact" data-umami-event="contact-whatsapp" data-umami-event-page="mentions-legales"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 3.5c-4.7 0-8.5 3.4-8.5 7.6 0 2.2 1 4.1 2.7 5.5L5.4 20.5l4-1.9c.8.2 1.7.3 2.6.3 4.7 0 8.5-3.4 8.5-7.6S16.7 3.5 12 3.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8.5 10.2h7M8.5 13.2h4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span data-champ="pied-contact">Contacter sur WhatsApp</span></a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+  const entete = document.getElementById('entete'), burger = entete.querySelector('.burger');
+  burger.addEventListener('click', () => { const o = entete.classList.toggle('ouvert'); burger.setAttribute('aria-expanded', String(o)); burger.setAttribute('aria-label', o ? 'Fermer le menu' : 'Ouvrir le menu'); });
+</script>
+</body>
+</html>

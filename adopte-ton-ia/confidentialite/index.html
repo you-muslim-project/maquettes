@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Confidentialité | Adopte ton IA</title>
+<link rel="icon" type="image/webp" href="/images/logo-adopte-ton-ia.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600&family=Parkinsans:wght@600..800&display=swap" rel="stylesheet">
+<style>
+  :root { --fond: #F4EDE2; --alt: #ECE1CF; --filet: #D6C8B3; --texte: #12273C; --doux: #4E5D6C; --lien: #08698C; --cyan: #34D8FF; --sable: #C5B5A0; --creme: #EADFCC; --rayon: 14px; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fond); color: var(--texte); font: 400 17px/1.65 Figtree, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: var(--lien); text-underline-offset: 3px; }
+  a:hover { color: #12273C; }
+  :focus-visible { outline: 3px solid var(--lien); outline-offset: 3px; border-radius: 6px; }
+  img { max-width: 100%; }
+  h1, h2 { font-family: Parkinsans, Figtree, system-ui, sans-serif; font-weight: 700; letter-spacing: -0.02em; text-wrap: balance; margin: 0; }
+  p, li { text-wrap: pretty; }
+  .conteneur { max-width: 1228px; margin: 0 auto; padding: 0 24px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 50px; padding: 0 24px; border-radius: var(--rayon); font: 600 16px/1.2 Figtree, system-ui, sans-serif; text-decoration: none; cursor: pointer; border: 1.5px solid transparent; }
+  .btn-principal { background: #12273C; color: #F4EDE2; border: 2px solid var(--cyan); box-shadow: 0 6px 18px rgba(18, 39, 60, .18); }
+  .btn-principal:hover { background: #1C3A57; color: #F4EDE2; }
+  .btn-contour { border-color: var(--texte); color: var(--texte); background: transparent; }
+  .btn-contour:hover { background: rgba(18, 39, 60, .06); color: var(--texte); }
+  .entete-site { position: sticky; top: 0; z-index: 50; background: rgba(234, 223, 204, .95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--sable); }
+  .entete-in { display: flex; align-items: center; gap: 28px; min-height: 68px; position: relative; }
+  .marque { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--texte); margin-right: auto; min-height: 44px; }
+  .marque:hover { color: var(--texte); }
+  .marque .logo-marque { width: 34px; height: 34px; display: block; flex: none; }
+  .marque strong { font-family: Parkinsans, Figtree, system-ui, sans-serif; font-weight: 700; font-size: 20px; }
+  .marque small { color: var(--doux); font-size: 13px; margin-left: 6px; }
+  .menu { display: flex; gap: 4px; }
+  .menu a { color: var(--texte); text-decoration: none; font-size: 15px; padding: 10px 12px; border-radius: 10px; white-space: nowrap; }
+  .menu a:hover { color: var(--lien); }
+  .entete-in .btn { min-height: 44px; padding: 0 18px; font-size: 15px; white-space: nowrap; }
+  .burger { display: none; width: 48px; height: 48px; border: 1px solid var(--filet); border-radius: 12px; background: transparent; color: var(--texte); cursor: pointer; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
+  .burger span { display: block; width: 20px; height: 2px; background: currentColor; border-radius: 2px; }
+  .ouvert .burger span:first-child { transform: translateY(4px) rotate(45deg); }
+  .ouvert .burger span:last-child { transform: translateY(-4px) rotate(-45deg); }
+  @media (max-width: 1180px) { .marque small { display: none; } }
+  @media (max-width: 1100px) {
+    .burger { display: inline-flex; }
+    .menu { display: none; position: absolute; left: 0; right: 0; top: 100%; flex-direction: column; background: #F4EDE2; border-bottom: 1px solid var(--sable); padding: 8px 16px 16px; }
+    .ouvert .menu { display: flex; }
+    .menu a { padding: 14px 12px; font-size: 17px; }
+    .entete-in { gap: 12px; }
+  }
+  @media (max-width: 760px) { .entete-in .btn { display: none; } .conteneur { padding: 0 16px; } }
+  .legal { max-width: calc(68ch + 48px); margin: 0 auto; padding: 72px 24px 96px; }
+  .legal h1 { font-size: clamp(32px, 4.4vw, 48px); line-height: 1.08; }
+  .legal .maj { margin: 14px 0 48px; font-size: 14px; color: var(--doux); padding-bottom: 28px; border-bottom: 1px solid var(--filet); }
+  .legal h2 { font-size: clamp(21px, 2vw, 25px); line-height: 1.25; margin: 48px 0 14px; }
+  .legal .maj + h2 { margin-top: 0; }
+  .legal p { margin: 0 0 16px; }
+  .legal ul { margin: 0 0 16px; padding-left: 1.3em; }
+  .legal li { margin: 0 0 10px; padding-left: .2em; }
+  .legal li::marker { color: var(--sable); }
+  .legal a { overflow-wrap: anywhere; }
+  .legal section[lang="en"] { margin-top: 56px; padding-top: 8px; border-top: 1px solid var(--filet); }
+  .tableau { margin: 8px 0 24px; overflow-x: auto; border: 1px solid var(--filet); border-radius: var(--rayon); background: #F9F4EC; }
+  .tableau table { width: 100%; border-collapse: collapse; font-size: 16px; }
+  .tableau th, .tableau td { text-align: left; padding: 13px 18px; border-bottom: 1px solid var(--filet); vertical-align: top; }
+  .tableau thead th { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--doux); background: var(--alt); }
+  .tableau tbody tr:last-child th, .tableau tbody tr:last-child td { border-bottom: 0; }
+  .tableau tbody th { font-family: Parkinsans, Figtree, system-ui, sans-serif; font-weight: 700; }
+  @media (max-width: 480px) { .legal { padding: 48px 16px 72px; } .tableau th, .tableau td { padding: 11px 12px; } .tableau table { font-size: 15px; } }
+  .pied { border-top: 1px solid var(--filet); padding: 32px 0; font-size: 15px; color: var(--doux); }
+  .pied .conteneur { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; align-items: center; }
+  .pied nav { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: center; }
+  .pied a { color: var(--doux); text-decoration: none; padding: 10px 8px; }
+  .pied a:hover { color: var(--lien); }
+  .pied a[aria-current="page"] { color: var(--texte); text-decoration: underline; text-decoration-color: var(--sable); }
+  .pied a.pied-wa { min-height: 44px; padding: 0 18px; gap: 8px; font-size: 15px; color: var(--texte); white-space: nowrap; }
+  .pied a.pied-wa:hover { color: var(--texte); }
+  .pied a.pied-wa svg { flex: none; }
+</style>
+<meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+
+<header class="entete-site" id="entete">
+  <div class="conteneur entete-in">
+    <a class="marque" href="/"><img class="logo-marque" src="/images/logo-adopte-ton-ia.webp" width="34" height="34" alt=""><span><strong>Adopte ton IA</strong><small>par AMD Project</small></span></a>
+    <nav class="menu" id="menu" aria-label="Menu principal">
+      <a href="/#ce-qu-il-fait">Ce qu'il fait</a>
+      <a href="/#comment">Comment ça marche</a>
+      <a href="/#prix">Prix</a>
+      <a href="/#questions">Questions</a>
+    </nav>
+    <a class="btn btn-principal" href="/#prix">Essayer 7 jours</a>
+    <button class="burger" type="button" aria-expanded="false" aria-controls="menu" aria-label="Ouvrir le menu"><span></span><span></span></button>
+  </div>
+</header>
+
+<main class="legal">
+<h1>Politique de confidentialité</h1>
+<p class="maj">Dernière mise à jour : 9 novembre 2026</p>
+<h2>Qui sommes-nous</h2>
+<p>Le site amd-project.fr et l'application Adopte ton IA sont édités par AMD-PROJECT LLC, société enregistrée dans l'État du Nouveau-Mexique (États-Unis). AMD-PROJECT LLC est responsable du traitement des données décrites sur cette page. Pour toute question : <a href="mailto:contact@amd-project.fr">contact@amd-project.fr</a>.</p>
+<h2>Sur ce site</h2>
+<p>Ce site n'a ni compte utilisateur, ni formulaire, ni outil de suivi publicitaire, et ne dépose aucun cookie. Quelques services techniques sont sollicités pendant ta visite :</p>
+<ul>
+<li>Hébergement (Netlify) : comme tout hébergeur, Netlify traite des journaux techniques (adresse IP, pages consultées) nécessaires à la fourniture du service.</li>
+<li>Mesure d'audience (Umami, données hébergées dans l'Union européenne) : un compteur anonyme et sans cookie, qui compte les pages vues, le site d'où tu arrives, ton pays, ton type d'appareil et les boutons cliqués. Il ne garde pas ton adresse IP et ne dépose rien sur ton appareil. Ces chiffres servent uniquement à améliorer ce site. <a href="#" id="ne-pas-compter">Ne plus compter mes visites sur cet appareil</a>.</li>
+<li>Polices de caractères (Google Fonts) : les polices sont chargées depuis les serveurs de Google, qui reçoit à cette occasion ton adresse IP.</li>
+<li>Animation 3D (jsDelivr) : la bibliothèque qui affiche la mascotte en 3D est chargée depuis jsDelivr, qui reçoit ton adresse IP.</li>
+<li>Prise de rendez-vous (Calendly) : si tu réserves un appel, la réservation se fait sur Calendly, selon sa propre politique de confidentialité. Nous recevons ce que tu y saisis (nom, email, créneau) pour assurer le rendez-vous.</li>
+<li>WhatsApp : si tu nous écris avec le bouton WhatsApp, la conversation passe par WhatsApp (Meta), selon ses propres conditions.</li>
+</ul>
+<h2>Quand tu t'abonnes</h2>
+<p>L'abonnement se prend sur la page de paiement licences.amd-project.fr. Le paiement est fait par PayPal : tes coordonnées bancaires restent chez PayPal, nous ne les voyons jamais.</p>
+<p>Nous conservons, pour faire fonctionner ta licence : ton email, ta formule, le nombre de postes, les dates d'essai et de paiement, l'identifiant de ton abonnement PayPal et ta licence. Ces données sont stockées sur notre serveur de licences, hébergé par Infomaniak en Suisse.</p>
+<p>Nous t'écrivons depuis <a href="mailto:contact@amd-project.fr">contact@amd-project.fr</a> (messagerie Infomaniak) : email de bienvenue avec ton lien d'annulation, rappel avant la fin de l'essai, et messages liés à ta licence. Nous ne t'envoyons pas de publicité.</p>
+<h2>Quand l'application fonctionne</h2>
+<p>Dev travaille sur ton ordinateur. Tes documents, tes mails et tes fichiers restent sur ton ordinateur : ils ne passent pas par nos serveurs.</p>
+<ul>
+<li>Licence : l'application contacte notre serveur de licences pour vérifier que ta licence est active. Elle envoie ta licence et une empreinte technique de l'ordinateur, un identifiant calculé qui sert seulement à compter les postes. Aucun contenu de ton travail n'est envoyé.</li>
+<li>Intelligence artificielle : pour comprendre tes demandes, Dev s'appuie sur un service d'intelligence artificielle auquel ton ordinateur se connecte directement, avec ton propre compte. Ce service les traite selon ses propres conditions, sans passer par nos serveurs.</li>
+<li>Lecture à voix haute : quand Dev lit ses réponses à voix haute, le texte à lire est envoyé à un service vocal en ligne (Microsoft, ou Google selon la voix choisie), qui renvoie le son.</li>
+<li>Mises à jour : l'application vérifie ses mises à jour sur GitHub, qui reçoit alors l'adresse IP de l'ordinateur.</li>
+<li>Services que tu connectes : ta messagerie, tes réseaux sociaux ou tes autres outils reçoivent ce que Dev y fait en ton nom, selon leurs propres conditions.</li>
+<li>Installation en direct : si tu choisis l'installation à distance par Youness, il se connecte à ton ordinateur avec ton accord, pendant la séance seulement.</li>
+</ul>
+<h2>Messagerie Facebook et Instagram</h2>
+<p>Lorsque tu nous écris sur notre Page Facebook ou notre compte Instagram professionnel, nous recevons tes messages via la plateforme de Meta : identifiant de messagerie, nom public du profil et contenu du message. Ces données nous servent exclusivement à :</p>
+<ul>
+<li>répondre à ta demande et assurer son suivi ;</li>
+<li>qualifier les demandes commerciales (comprendre ton besoin pour t'orienter vers le bon service) ;</li>
+<li>conserver l'historique de la conversation pour ne pas te faire répéter.</li>
+</ul>
+<p>Certaines premières réponses peuvent être préparées à l'aide d'un outil d'intelligence artificielle, sous le contrôle de notre équipe. Nous n'envoyons jamais de messages non sollicités, nous ne publions rien automatiquement et nous n'accédons à aucun autre compte que ceux administrés par AMD-PROJECT.</p>
+<h2>Ce que nous ne faisons jamais</h2>
+<ul>
+<li>Nous ne vendons ni ne louons tes données à qui que ce soit.</li>
+<li>Nous ne partageons pas tes données avec des tiers à des fins publicitaires.</li>
+<li>Nous n'utilisons pas tes messages pour autre chose que le traitement de ta demande.</li>
+</ul>
+<h2>Services tiers utilisés pour le traitement</h2>
+<p>Pour fonctionner, nos services s'appuient sur des sous-traitants techniques qui traitent des données pour notre compte et selon nos instructions :</p>
+<ul>
+<li>Netlify : hébergement du site et des services de réception de messages.</li>
+<li>Infomaniak : hébergement du serveur de licences et envoi de nos emails.</li>
+<li>PayPal : paiement des abonnements.</li>
+<li>Calendly : prise de rendez-vous.</li>
+<li>Umami : mesure d'audience anonyme du site, sans cookie (données hébergées dans l'Union européenne).</li>
+<li>Meta Platforms : acheminement des messages Facebook et Instagram.</li>
+<li>Supabase : stockage sécurisé des conversations et des demandes reçues par Facebook et Instagram (bases de données hébergées dans l'Union européenne).</li>
+<li>Anthropic : traitement par intelligence artificielle des messages reçus par Facebook et Instagram, pour la préparation des réponses.</li>
+</ul>
+<h2>Durée de conservation</h2>
+<p>Les données de ta licence sont conservées tant que ton abonnement est actif, puis le temps nécessaire à nos obligations comptables et légales. Les messages et coordonnées liés à une demande sont conservés pendant la durée nécessaire à son traitement et au suivi de la relation commerciale, et au plus tard 3 ans après notre dernier échange, sauf obligation légale contraire ou demande de suppression de ta part.</p>
+<h2>Tes droits et la suppression de tes données</h2>
+<p>Conformément à la réglementation applicable (dont le RGPD pour les résidents de l'Union européenne), tu disposes d'un droit d'accès, de rectification, d'opposition et d'effacement de tes données.</p>
+<p>Pour demander la suppression de tes données (y compris les données reçues via Facebook ou Instagram) : envoie un email à <a href="mailto:contact@amd-project.fr">contact@amd-project.fr</a> avec pour objet « Suppression de mes données », en précisant ton email d'abonnement ou le nom du profil Facebook ou Instagram concerné. Ta demande est traitée sous 30 jours et une confirmation t'est envoyée.</p>
+<h2>Contact</h2>
+<p>AMD-PROJECT LLC, 8206 Louisiana Blvd NE, Ste A #1560, Albuquerque, Nouveau-Mexique 87113, États-Unis, <a href="mailto:contact@amd-project.fr">contact@amd-project.fr</a></p>
+<section lang="en">
+<h2>English summary</h2>
+<p>amd-project.fr and the Adopte ton IA app are operated by AMD-PROJECT LLC (New Mexico, USA). This website sets no cookies and uses no advertising trackers; visits are counted anonymously, without cookies, with Umami (data hosted in the EU). Subscriptions are paid through PayPal; we keep your email, plan, number of seats, trial and payment dates and PayPal subscription ID on our licence server hosted by Infomaniak in Switzerland. The app works on your computer: your documents do not go through our servers. When you message our Facebook Page or professional Instagram account, we receive your messages through Meta's platform and use them solely to reply to and follow up on your inquiry; some first replies may be AI-assisted under our team's supervision. We never send unsolicited messages and never sell or share your data. To request deletion of your data, email <a href="mailto:contact@amd-project.fr">contact@amd-project.fr</a> with the subject "Data deletion request" and your subscription email or the name of the Facebook or Instagram profile concerned; requests are handled within 30 days.</p>
+</section>
+</main>
+
+<footer class="pied">
+  <div class="conteneur">
+    <span>AMD-PROJECT LLC</span>
+    <nav aria-label="Liens légaux">
+      <a href="/mentions-legales/">Mentions légales</a>
+      <a href="/confidentialite/" aria-current="page">Confidentialité</a>
+      <a href="/conditions-de-vente/">Conditions de vente</a>
+      <a class="btn btn-contour pied-wa" href="https://wa.me/212659414774?text=Bonjour%2C%20je%20viens%20du%20site%20Adopte%20ton%20IA." target="_blank" rel="noopener" data-champ="lien-contact" data-umami-event="contact-whatsapp" data-umami-event-page="confidentialite"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 3.5c-4.7 0-8.5 3.4-8.5 7.6 0 2.2 1 4.1 2.7 5.5L5.4 20.5l4-1.9c.8.2 1.7.3 2.6.3 4.7 0 8.5-3.4 8.5-7.6S16.7 3.5 12 3.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8.5 10.2h7M8.5 13.2h4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span data-champ="pied-contact">Contacter sur WhatsApp</span></a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+  const entete = document.getElementById('entete'), burger = entete.querySelector('.burger');
+  burger.addEventListener('click', () => { const o = entete.classList.toggle('ouvert'); burger.setAttribute('aria-expanded', String(o)); burger.setAttribute('aria-label', o ? 'Fermer le menu' : 'Ouvrir le menu'); });
+</script>
+<script>
+  // droit d'opposition à la mesure d'audience : Umami ne compte plus cet appareil (réglage gardé dans ce navigateur)
+  (() => {
+    const lien = document.getElementById('ne-pas-compter');
+    if (!lien) return;
+    const deja = () => { try { return localStorage.getItem('umami.disabled') === '1'; } catch (e) { return false; } };
+    const dire = () => { lien.replaceWith(document.createTextNode("C'est noté : tes visites ne sont plus comptées sur cet appareil")); };
+    if (deja()) { dire(); return; }
+    lien.addEventListener('click', (e) => { e.preventDefault(); try { localStorage.setItem('umami.disabled', '1'); } catch (err) {} dire(); });
+  })();
+</script>
+</body>
+</html>

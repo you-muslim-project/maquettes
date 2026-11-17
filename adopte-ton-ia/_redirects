@@ -1,0 +1,9 @@
+# Ancien site de l'agence (remplacé le 05/11/2026 par Adopte ton IA) : ses pages renvoient à l'accueil.
+# Sauvegarde complète : livrables/sites/amd-project-site-backup-avant-adopte-ton-ia-2026-11-05
+/tarifs/*          /   301
+/accompagnement/*  /   301
+/application/*     /   301
+/demo/*            /   301
+/tunnel/*          /   301
+/en/*              /   301
+/en                /   301
