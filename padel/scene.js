@@ -43,10 +43,10 @@ export async function construire({ THREE, racine, loader }) {
   const verre = new THREE.MeshPhysicalMaterial({ color: 0xd8f3f0, roughness: 0.04, metalness: 0, transparent: true, opacity: 0.22, envMapIntensity: 1.6, side: THREE.DoubleSide, depthWrite: false, clearcoat: 1 });
   const grilleC = toile(256, 256, (g, L, H) => { g.strokeStyle = '#fff'; g.lineWidth = 9; g.beginPath();
     g.moveTo(0, H / 2); g.lineTo(L / 2, 0); g.lineTo(L, H / 2); g.lineTo(L / 2, H); g.closePath(); g.stroke(); });
-  const grille = (l, h) => new THREE.MeshStandardMaterial({ color: 0x111a22, alphaMap: tex(grilleC, [l / 0.06, h / 0.06], false), alphaTest: 0.4, transparent: false, side: THREE.DoubleSide, roughness: 0.4, metalness: 0.7 });
+  const grille = (l, h) => new THREE.MeshStandardMaterial({ color: 0x111a22, alphaMap: tex(grilleC, [l / 0.06, h / 0.06], false), transparent: true, depthWrite: false, side: THREE.DoubleSide, roughness: 0.4, metalness: 0.7 });  // transparence douce : plus de bande qui clignote (retour du 17/11)
 
   const panneau = (parent, mat, l, h, x, y, z, rotY = 0) => {
-    const p = new THREE.Mesh(new THREE.PlaneGeometry(m(l), m(h)), mat); p.position.set(m(x), m(y), m(z)); p.rotation.y = rotY; p.castShadow = mat !== verre; parent.add(p); return p;
+    const p = new THREE.Mesh(new THREE.PlaneGeometry(m(l), m(h)), mat); p.position.set(m(x), m(y), m(z)); p.rotation.y = rotY; p.castShadow = !mat.transparent; parent.add(p); return p;
   };
   const poteau = (parent, x, z, h) => { const b = new THREE.Mesh(new THREE.BoxGeometry(m(0.08), m(h), m(0.08)), metal); b.position.set(m(x), m(h / 2), m(z)); b.castShadow = true; parent.add(b); };
   const lisse = (parent, x0, z0, x1, z1, y) => { const l = Math.hypot(x1 - x0, z1 - z0); const b = new THREE.Mesh(new THREE.BoxGeometry(m(l), m(0.06), m(0.06)), metal);
