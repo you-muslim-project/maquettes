@@ -1,0 +1,57 @@
+/* Haut de page 3D d'AMD Project Maroc (brouillon du 17/11/2026) : le bureau reste collé pendant que les étapes défilent par-dessus. */
+.heros.claire-h.bloc-3d { padding: 0; overflow: visible; }
+.heros.claire-h.bloc-3d::before { display: none; }
+.bloc-3d .piste3d { position: relative; }
+.bloc-3d .toile3d { position: sticky; top: 66px; height: calc(100vh - 66px); height: calc(100svh - 66px); margin-bottom: calc(66px - 100vh); margin-bottom: calc(66px - 100svh); z-index: 0; pointer-events: none; overflow: hidden; border-radius: 0 0 36px 36px; }
+.bloc-3d .toile3d canvas { display: block; width: 100%; height: 100%; }
+.bloc-3d .toile3d::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(120% 90% at 70% 45%, transparent 55%, rgba(120,98,66,.18) 100%); }
+.bloc-3d .etape3d { position: relative; z-index: 1; min-height: calc(100vh - 66px); min-height: calc(100svh - 66px); display: flex; align-items: center;
+  padding: 0 clamp(18px, 5vw, 72px); pointer-events: none; }
+.bloc-3d .etape3d > * { pointer-events: auto; }
+.bloc-3d .etape3d .entete3d { padding: 40px 0; max-width: min(540px, 39vw); }
+.heros.claire-h.bloc-3d h1 { font-size: clamp(32px, 3.9vw, 54px); }
+.bloc-3d .carte3d { max-width: 430px; padding: 24px 26px; border-radius: 18px; background: rgba(11,23,38,.86);
+  border: 1px solid var(--filet); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: var(--creme);
+  text-decoration: none; display: block; opacity: .35; transform: translateY(18px); transition: opacity .6s cubic-bezier(.16,1,.3,1), transform .6s cubic-bezier(.16,1,.3,1); }
+.bloc-3d .etape3d.active .carte3d { opacity: 1; transform: none; }
+.bloc-3d .carte3d .num { font: 600 13px/1.3 Figtree, sans-serif; letter-spacing: .1em; text-transform: uppercase; color: var(--cyan); margin: 0 0 12px; }
+.bloc-3d .carte3d .titre3d { color: var(--creme); font: 700 clamp(22px, 2.2vw, 30px)/1.12 Parkinsans, Figtree, sans-serif; margin: 0 0 12px; letter-spacing: -.01em; }
+.bloc-3d .carte3d .texte3d { color: #C4D3DE; font-size: 16px; line-height: 1.5; margin: 0 0 14px; }
+.bloc-3d .carte3d .voir { color: var(--cyan); font-weight: 600; font-size: 15px; }
+.bloc-3d .legende3d { position: absolute; left: clamp(18px, 5vw, 72px); bottom: 22px; margin: 0; font-size: 13px; color: var(--gris); z-index: 2; }
+.bloc-3d .repli-2d { padding: 0 22px 60px; }
+.heros.claire-h.bloc-3d .repli-2d[hidden] { display: none !important; }
+html.sans-3d .bloc-3d .toile3d { display: none; }
+html.sans-3d .bloc-3d .etape3d:not([data-etape="0"]), html.sans-3d .bloc-3d .legende3d { display: none; }
+html.sans-3d .bloc-3d .etape3d { min-height: 0; padding-top: 40px; }
+html.sans-3d .bloc-3d .etape3d .entete3d { max-width: 640px; }
+html.sans-3d .heros.claire-h.bloc-3d .repli-2d[hidden] { display: block !important; }
+
+@media (max-width: 900px) {
+  .heros.claire-h.bloc-3d .conteneur { display: block; }
+  .heros.claire-h.bloc-3d .texte-h { display: block; }
+  .heros.claire-h.bloc-3d { padding: 0; }
+}
+@media (max-width: 759px) {
+  .bloc-3d .toile3d { top: 66px; }
+  .bloc-3d .etape3d { align-items: flex-end; padding: 0 14px 40px; }
+  /* téléphone : la scène entière en haut, le texte en dessous sur un voile crème */
+  .bloc-3d .etape3d[data-etape="0"] { padding-bottom: 24px; }
+  .bloc-3d .etape3d[data-etape="0"]::before { content: ""; position: absolute; inset: auto 0 0 0; height: 70%; pointer-events: none;
+    background: linear-gradient(rgba(244,237,226,0) 0%, rgba(244,237,226,.88) 22%, rgba(244,237,226,.94) 100%); }
+  .bloc-3d .etape3d .entete3d { position: relative; max-width: none; padding: 0 4px; }
+  .heros.claire-h.bloc-3d h1 { font-size: 27px; }
+  .heros.claire-h.bloc-3d .etiquette, .heros.claire-h.bloc-3d .ar { display: none; }
+  .heros.claire-h.bloc-3d .chapo { font-size: 14.5px; line-height: 1.45; margin: 10px 0 12px; }
+  .heros.claire-h.bloc-3d .rassure { margin: 8px 0 0; font-size: 12.5px; }
+  .heros.claire-h.bloc-3d .actions { display: flex; gap: 8px; flex-wrap: nowrap; }
+  .heros.claire-h.bloc-3d .actions .btn { min-height: 48px; padding: 0 12px; font-size: 14px; gap: 7px; }
+  .heros.claire-h.bloc-3d .actions .btn-wa { flex: 1; }
+  .bloc-3d .carte3d { max-width: none; padding: 18px; }
+  /* téléphone : carte courte pour laisser l'ordinateur et le téléphone entiers au-dessus (le détail est dans les sections liées) */
+  .bloc-3d .carte3d .texte3d { display: none; }
+  .bloc-3d .carte3d .titre3d { font-size: 21px; margin-bottom: 8px; }
+  .bloc-3d .legende3d { bottom: 12px; font-size: 12px; }
+  html.sans-3d .heros.claire-h.bloc-3d .ar { display: block; }
+}
