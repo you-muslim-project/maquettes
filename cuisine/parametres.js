@@ -1,0 +1,68 @@
+// Luxury Cuisine (Tanger) : le SEUL fichier qui change d'un prospect à l'autre (modèle « cuisiniste », 17/11/2026).
+// Données relevées le 17/11/2026 (travaux/2026-11-17-cibles-36/DOSSIERS-9.md, § 4) : nom, téléphone (Maps = Facebook),
+// quartier Hay Nasr, page Facebook « universcuisinetanger » (6,8 K abonnés), description Facebook
+// « Cuisine équipée-portes-placard-granite/silestone-électroménager ». Rien d'inventé. AUCUN prix.
+// Volontairement absents : la note Google (3,7, avis de 4 à 8 ans), les avis, les horaires (non relevés), les photos (non téléchargées).
+window.SITE = {
+  nom: 'Luxury Cuisine',
+  nomLong: { fr: 'Luxury Cuisine Tanger', ar: 'Luxury Cuisine طنجة' },
+  metier: { fr: 'Cuisine et design intérieur à Tanger', ar: 'المطابخ والديكور الداخلي في طنجة' },
+  whatsapp: '212668892259',
+  telephoneAffiche: '06 68 89 22 59',
+  adresse: { fr: 'Hay Nasr, Tanger', ar: 'حي النصر، طنجة' },
+  carte: 'https://www.google.com/maps/search/?api=1&query=Luxury+Cuisine+Hay+Nasr+Tanger',
+  facebook: 'https://www.facebook.com/universcuisinetanger',
+  abonnes: 6800,
+  // finitions du configurateur : exemples visuels, couleurs indicatives
+  facades: [
+    { id: 'blanc', couleur: '#ECEAE4', nom: { fr: 'Blanc mat', ar: 'أبيض مات' } },
+    { id: 'sauge', couleur: '#8E9F8A', nom: { fr: 'Vert sauge', ar: 'أخضر' } },
+    { id: 'chene', couleur: '#B88C5E', bois: true, nom: { fr: 'Chêne', ar: 'خشب البلوط' } },
+    { id: 'noir', couleur: '#26272A', nom: { fr: 'Noir', ar: 'كحل' } },
+  ],
+  plans: [
+    { id: 'granit-noir', type: 'granite', fond: '#1c1c1e', nom: { fr: 'Granite noir', ar: 'گرانيت كحل' } },
+    { id: 'granit-gris', type: 'granite', fond: '#8b8a86', nom: { fr: 'Granite gris', ar: 'گرانيت رمادي' } },
+    { id: 'silestone', type: 'silestone', fond: '#eeece7', nom: { fr: 'Silestone blanc', ar: 'سيليستون أبيض' } },
+  ],
+  gamme: [
+    { fr: 'Cuisine équipée', ar: 'كوزينة مجهزة' },
+    { fr: 'Portes', ar: 'البيبان' },
+    { fr: 'Placards', ar: 'البلاكارات' },
+    { fr: 'Plans de travail granite ou silestone', ar: 'بلان دو تراڤاي گرانيت ولا سيليستون' },
+    { fr: 'Électroménager', ar: 'الأجهزة الكهرومنزلية' },
+  ],
+  textes: {
+    surtitre: { fr: 'Tanger · Hay Nasr', ar: 'طنجة · حي النصر' },
+    titre: { fr: ['La cuisine', 'que vous', 'imaginez.'], ar: ['الكوزينة', 'اللي كتحلم', 'بيها.'] },
+    chapo: { fr: 'Cuisine équipée, portes, placards, plans de travail en granite ou silestone et électroménager, à Tanger.', ar: 'كوزينة مجهزة، بيبان، بلاكارات، بلان دو تراڤاي گرانيت ولا سيليستون، والأجهزة الكهرومنزلية، فطنجة.' },
+    boutonDevis: { fr: 'Demander un devis', ar: 'طلب ديفي' },
+    boutonDecouvrir: { fr: 'Composer ma cuisine', ar: 'صاوب الكوزينة ديالي' },
+    noteCourte: { fr: '{abonnes} abonnés sur Facebook', ar: '{abonnes} متابع على Facebook' },
+    etapes: [
+      { titre: { fr: 'Cuisine équipée', ar: 'كوزينة مجهزة' }, texte: { fr: 'Caissons, façades, plan de travail, électroménager : la cuisine se compose module par module, selon votre pièce.', ar: 'الصناديق، الواجهات، البلان والأجهزة: الكوزينة كتتركب موديل بموديل، على حساب البيت ديالك.' } },
+      { titre: { fr: 'Choisissez la façade', ar: 'اختار الواجهة' }, texte: { fr: 'Touchez une couleur : la cuisine change devant vous.', ar: 'كليكي على لون: الكوزينة كتبدل قدامك.' }, choix: 'facades' },
+      { titre: { fr: 'Granite ou silestone', ar: 'گرانيت ولا سيليستون' }, texte: { fr: 'Le plan de travail donne le ton. Essayez-les.', ar: 'البلان دو تراڤاي هو اللي كيعطي الطابع. جربهم.' }, choix: 'plans' },
+      { titre: { fr: 'Portes et placards', ar: 'البيبان والبلاكارات' }, texte: { fr: 'Des rangements pensés pour le quotidien, du tiroir au placard haut.', ar: 'رونجمون مدروس للحياة اليومية، من التيروار حتى البلاكار الفوقاني.' } },
+      { titre: { fr: 'Électroménager intégré', ar: 'أجهزة مدمجة' }, texte: { fr: 'Four, plaque, hotte et réfrigérateur trouvent leur place dans les meubles.', ar: 'الفور، البلاكا، الهوت والثلاجة كيتدمجو فالموبل.' } },
+    ],
+    noteCouleurs: { fr: 'Couleurs indicatives : les finitions réelles se choisissent avec le magasin.', ar: 'الألوان غير للتوضيح: الفينيسيون الحقيقيين كتختارهم مع المحل.' },
+    titreGamme: { fr: 'Ce que fait Luxury Cuisine', ar: 'شنو كتدير Luxury Cuisine' },
+    titreDevis: { fr: 'Votre projet en une minute', ar: 'المشروع ديالك فدقيقة' },
+    sousDevis: { fr: 'Le magasin vous répond sur WhatsApp. Rien n’est engagé avant votre accord.', ar: 'المحل كيجاوبك فواتساب. والو ما كيتلزم بلا موافقتك.' },
+    champProjet: { fr: 'Votre projet', ar: 'المشروع' },
+    champLongueur: { fr: 'Longueur des murs (m, environ)', ar: 'طول الحيوط (متر، تقريبا)' },
+    champFacade: { fr: 'Façade', ar: 'الواجهة' },
+    champPlan: { fr: 'Plan de travail', ar: 'البلان' },
+    champQuartier: { fr: 'Quartier', ar: 'الحي' },
+    champNom: { fr: 'Votre nom', ar: 'الاسم' },
+    consentement: { fr: 'J’accepte que ces informations servent uniquement à traiter ma demande (loi 09-08).', ar: 'أوافق على استعمال هاد المعلومات غير باش يتعالج الطلب ديالي (القانون 09-08).' },
+    boutonEnvoyer: { fr: 'Envoyer sur WhatsApp', ar: 'صيفط على واتساب' },
+    messageWhatsapp: { fr: 'Bonjour Luxury Cuisine, je voudrais un devis.', ar: 'السلام عليكم Luxury Cuisine، بغيت ديفي.' },
+    recapTitre: { fr: 'Votre demande', ar: 'الطلب ديالك' },
+    titreVisite: { fr: 'Passer au magasin', ar: 'زور المحل' },
+    boutonCarte: { fr: 'Ouvrir l’itinéraire', ar: 'افتح الطريق' },
+    boutonFacebook: { fr: 'Voir les réalisations sur Facebook', ar: 'شوف الخدمة على Facebook' },
+    credits: { fr: 'Objets 3D : Poly Haven (CC0) · Three.js (MIT)', ar: 'نماذج ثلاثية الأبعاد: Poly Haven (CC0) · Three.js (MIT)' },
+  },
+};
