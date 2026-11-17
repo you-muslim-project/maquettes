@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Padel Hub Tangier</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800;900&family=Instrument+Sans:wght@400;600;700&family=Alexandria:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="parametres.js"></script>
+<script type="importmap">{ "imports": { "three": "../moteur/vendor/three.module.min.js", "three/addons/": "../moteur/vendor/addons/" } }</script>
+<style>
+:root { --fond:#EDF1EE; --texte:#0B1622; --accent:#D7F205; --second:#1F5FD1; --doux:#566170; --nuit:#0B1622;
+  --page:var(--fond); --encre:var(--texte);
+  --titre:'Archivo', system-ui, sans-serif; --corps:'Instrument Sans', system-ui, sans-serif;
+  --entree:cubic-bezier(.16,1,.3,1); --ressort:cubic-bezier(.34,1.56,.64,1); }
+[lang=ar] { --titre:'Alexandria', sans-serif; --corps:'Alexandria', sans-serif; }
+body.nuit { --page:var(--nuit); --encre:#EDF1EE; }
+* { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; }
+body { background:var(--page); color:var(--texte); font:16px/1.55 var(--corps); overflow-x:hidden; -webkit-font-smoothing:antialiased; transition:background-color 1.2s var(--entree); }
+/* lignes de terrain très légères en fond */
+body::before { content:''; position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.5;
+  background:linear-gradient(90deg, transparent calc(50% - 1px), rgba(31,95,209,.10) 0 calc(50% + 1px), transparent 0),
+             linear-gradient(transparent calc(62% - 1px), rgba(31,95,209,.10) 0 calc(62% + 1px), transparent 0); }
+#scene3d { position:fixed; inset:0; width:100%; height:100%; z-index:1; display:block; }
+a { color:inherit; }
+
+.barre { position:fixed; top:0; inset-inline:0; z-index:20; display:flex; align-items:center; gap:12px; padding:12px clamp(16px,4vw,48px);
+  background:linear-gradient(var(--page), transparent); color:var(--encre); transition:color 1s; }
+.logo { font:900 19px/1 var(--titre); letter-spacing:-.02em; display:flex; align-items:center; gap:10px; text-decoration:none; text-transform:uppercase; }
+.logo i { width:28px; height:28px; border-radius:50%; background:var(--accent); position:relative; box-shadow:inset -4px -4px 0 rgba(0,0,0,.08); }
+.logo i::after { content:''; position:absolute; inset:4px 8px; border:2px solid rgba(255,255,255,.9); border-block:0; border-radius:50%; }
+.barre .espace { flex:1; }
+.pastille { border:1.5px solid currentColor; background:transparent; border-radius:99px; padding:7px 14px; font:600 14px/1 var(--corps); cursor:pointer; color:inherit; }
+.btn { display:inline-flex; align-items:center; gap:10px; border:0; border-radius:99px; padding:15px 24px; font:700 16px/1 var(--corps); cursor:pointer; text-decoration:none; transition:transform .5s var(--ressort), box-shadow .3s; }
+.btn-wa { background:var(--accent); color:var(--nuit); box-shadow:0 12px 30px -12px rgba(120,150,0,.8); }
+.btn-wa svg { width:20px; height:20px; }
+.btn-ligne { background:rgba(255,255,255,.55); color:var(--texte); border:1.5px solid rgba(11,22,34,.2); backdrop-filter:blur(6px); }
+.btn:hover { transform:translateY(-2px); }
+
+/* chargement : une balle qui rebondit */
+#chargement { position:fixed; inset:0; z-index:30; display:grid; place-items:center; background:var(--fond); transition:opacity .8s var(--entree), visibility .8s; }
+#chargement.fini { opacity:0; visibility:hidden; }
+#chargement .b { width:34px; height:34px; border-radius:50%; background:var(--accent); margin:0 auto; animation:saut .7s cubic-bezier(.3,0,.7,1) infinite alternate; box-shadow:inset -5px -5px 0 rgba(0,0,0,.08); }
+#chargement .o { width:40px; height:8px; border-radius:50%; background:rgba(11,22,34,.15); margin:4px auto 0; animation:ombre .7s cubic-bezier(.3,0,.7,1) infinite alternate; }
+#chargement p { font:900 22px/1 var(--titre); text-transform:uppercase; letter-spacing:-.02em; margin-top:18px; text-align:center; }
+@keyframes saut { from { transform:translateY(-70px); } to { transform:none; } }
+@keyframes ombre { from { transform:scale(.5); opacity:.4; } }
+
+main { position:relative; z-index:2; }
+.ecran { min-height:100svh; display:flex; padding:0 clamp(18px,5vw,72px); pointer-events:none; }
+.ecran > * { pointer-events:auto; }
+.accueil { flex-direction:column; justify-content:center; max-width:min(580px,46vw); padding-top:70px; }
+.surtitre { font:700 13px/1 var(--corps); letter-spacing:.16em; text-transform:uppercase; color:var(--second); margin-bottom:18px; display:flex; gap:10px; align-items:center; }
+.surtitre::before { content:''; width:26px; height:3px; background:var(--accent); border-radius:2px; }
+[lang=ar] .surtitre { letter-spacing:0; font-size:15px; }
+h1 { font:900 clamp(40px,5.2vw,80px)/.92 var(--titre); letter-spacing:-.045em; text-transform:uppercase; }
+[lang=ar] h1 { letter-spacing:0; line-height:1.3; text-transform:none; font-weight:700; }
+h1 span { display:block; overflow:hidden; padding-bottom:.04em; }
+h1 span b { display:block; font-weight:inherit; transform:translateY(105%); animation:monte 1s var(--entree) forwards; }
+h1 span:nth-child(2) b { animation-delay:.12s; } h1 span:nth-child(3) b { animation-delay:.24s; color:var(--second); }
+@keyframes monte { to { transform:none; } }
+.chapo { font-size:clamp(16px,1.35vw,19px); color:var(--doux); max-width:44ch; margin:22px 0 28px; }
+.actions { display:flex; flex-wrap:wrap; gap:12px; align-items:center; }
+.note { margin-top:22px; font:600 14px/1 var(--corps); color:var(--doux); display:flex; gap:8px; align-items:center; }
+.note b { color:#c9a400; letter-spacing:2px; }
+
+.etape { align-items:center; }
+.carte { max-width:420px; background:rgba(247,250,248,.82); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border:1px solid rgba(11,22,34,.08);
+  border-radius:22px; padding:26px 28px; box-shadow:0 30px 60px -30px rgba(11,22,34,.45);
+  opacity:0; transform:translateX(-40px); transition:opacity .8s var(--entree), transform .8s var(--entree), background-color 1s, color 1s; }
+[dir=rtl] .carte { transform:translateX(40px); }
+.carte.vue { opacity:1; transform:none; }
+body.nuit .carte { background:rgba(14,28,44,.72); color:#EDF1EE; border-color:rgba(215,242,5,.18); }
+body.nuit .carte p { color:rgba(237,241,238,.72); }
+.carte small { font:800 13px/1 var(--titre); color:var(--second); letter-spacing:.1em; }
+body.nuit .carte small { color:var(--accent); }
+.carte h2 { font:800 clamp(26px,2.6vw,36px)/1.05 var(--titre); letter-spacing:-.03em; margin:10px 0 10px; }
+[lang=ar] .carte h2 { letter-spacing:0; line-height:1.35; }
+.carte p { color:var(--doux); }
+
+.plein { position:relative; z-index:3; background:var(--fond); padding:clamp(64px,9vw,120px) clamp(18px,5vw,72px); }
+.plein.sombre { background:var(--nuit); color:#EDF1EE; }
+.plein h2 { font:900 clamp(30px,4.2vw,58px)/.98 var(--titre); letter-spacing:-.04em; margin-bottom:34px; text-transform:uppercase; }
+[lang=ar] .plein h2 { letter-spacing:0; line-height:1.3; text-transform:none; font-weight:700; }
+.bord { position:relative; z-index:3; height:90px; margin-top:-90px; background:linear-gradient(transparent, var(--nuit)); pointer-events:none; }
+.chiffres { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:18px; }
+.chiffre { border-top:2px solid rgba(215,242,5,.35); padding-top:18px; }
+.chiffre strong { display:block; font:900 clamp(44px,5.4vw,80px)/1 var(--titre); color:var(--accent); letter-spacing:-.04em; }
+.chiffre span { color:rgba(237,241,238,.75); }
+.deux { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:clamp(24px,5vw,72px); align-items:start; }
+.horaires { list-style:none; border-top:1px solid rgba(11,22,34,.12); }
+.horaires li { display:flex; justify-content:space-between; padding:13px 4px; border-bottom:1px solid rgba(11,22,34,.12); font-variant-numeric:tabular-nums; }
+.horaires li.auj { color:var(--second); font-weight:700; background:rgba(31,95,209,.07); border-radius:10px; padding-inline:12px; }
+.etat { display:inline-flex; gap:8px; align-items:center; font-weight:700; margin-bottom:16px; }
+.etat::before { content:''; width:10px; height:10px; border-radius:50%; background:#2f9e5b; box-shadow:0 0 0 0 rgba(47,158,91,.6); animation:pouls 1.8s infinite; }
+.etat.ferme::before { background:#b4483c; animation:none; }
+@keyframes pouls { 70% { box-shadow:0 0 0 10px rgba(47,158,91,0); } }
+.avis { display:grid; gap:16px; }
+.un-avis { background:#fff; border-radius:20px; padding:24px; border:1px solid rgba(11,22,34,.07); border-inline-start:4px solid var(--accent); }
+.un-avis q { display:block; font:600 19px/1.45 var(--corps); quotes:none; }
+.un-avis div { margin-top:12px; color:var(--doux); font-size:14px; }
+.un-avis b { color:#c9a400; letter-spacing:2px; }
+.source { font-size:13px; color:var(--doux); margin-top:10px; }
+.adresse { font:800 22px/1.35 var(--titre); margin-bottom:20px; letter-spacing:-.02em; }
+.photos { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:14px; }
+.photos figure { border-radius:20px; overflow:hidden; position:relative; }
+.photos img { width:100%; aspect-ratio:4/3; object-fit:cover; display:block; transition:transform 1.2s var(--entree); }
+.photos figure:hover img { transform:scale(1.04); }
+.photos figcaption { position:absolute; inset-inline-start:14px; bottom:14px; background:rgba(11,22,34,.75); color:#fff; font-size:13px; font-weight:600; padding:6px 12px; border-radius:99px; }
+
+/* réservation */
+.resa { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.1fr); gap:clamp(24px,5vw,72px); align-items:start; }
+form { display:grid; gap:14px; }
+.ligne2 { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
+label { display:grid; gap:6px; font-weight:600; font-size:14px; }
+input, select { font:16px var(--corps); padding:14px 16px; border-radius:14px; border:1.5px solid rgba(11,22,34,.16); background:#fff; color:var(--texte); width:100%; min-width:0; }
+.choix { display:flex; flex-wrap:wrap; gap:8px; }
+.choix input { position:absolute; opacity:0; width:1px; height:1px; }
+.choix span { display:inline-block; padding:10px 15px; border-radius:99px; border:1.5px solid rgba(11,22,34,.16); background:#fff; font-weight:600; cursor:pointer; transition:background .25s, border-color .25s, transform .4s var(--ressort); font-variant-numeric:tabular-nums; }
+.choix input:checked + span { background:var(--nuit); color:var(--accent); border-color:var(--nuit); transform:scale(1.05); }
+.choix input:focus-visible + span { outline:2px solid var(--second); outline-offset:2px; }
+fieldset { border:0; display:grid; gap:8px; } legend { font-weight:600; font-size:14px; margin-bottom:6px; }
+.coche { display:flex; gap:10px; align-items:flex-start; font-weight:400; font-size:14px; color:var(--doux); }
+.coche input { margin-top:3px; width:18px; height:18px; flex:none; }
+.recap { background:var(--nuit); color:#EDF1EE; border-radius:22px; padding:26px; position:sticky; top:90px; }
+.recap h3 { font:800 15px/1 var(--titre); letter-spacing:.12em; text-transform:uppercase; color:var(--accent); margin-bottom:16px; }
+.recap dl { display:grid; grid-template-columns:auto 1fr; gap:10px 18px; }
+.recap dt { color:rgba(237,241,238,.6); } .recap dd { font-weight:700; text-align:end; }
+
+footer { position:relative; z-index:3; background:var(--nuit); color:rgba(237,241,238,.7); padding:34px clamp(18px,5vw,72px); font-size:13px; display:flex; flex-wrap:wrap; gap:10px 28px; justify-content:space-between; }
+.flottant { position:fixed; z-index:25; inset-inline-end:18px; bottom:18px; width:58px; height:58px; border-radius:50%; background:#25D366; display:grid; place-items:center; box-shadow:0 14px 30px -10px rgba(0,0,0,.45); transform:scale(0); transition:transform .6s var(--ressort); }
+.flottant.vu { transform:scale(1); }
+.flottant svg { width:30px; height:30px; fill:#fff; }
+
+@media (max-width:760px) {
+  .barre { padding:10px 14px; }
+  .barre .btn-wa { display:none; }
+  .accueil { max-width:none; justify-content:space-between; padding-top:66px; padding-bottom:18px; min-height:100svh; }
+  h1 { font-size:clamp(34px,11vw,48px); }
+  .accueil .bas { background:linear-gradient(rgba(237,241,238,0), var(--fond) 28%); margin:0 -18px; padding:40px 18px 0; }
+  .chapo { font-size:15px; margin:0 0 14px; }
+  .btn { padding:14px 20px; font-size:15px; }
+  .note { margin-top:12px; }
+  .etape { align-items:flex-end; padding-bottom:28px; }
+  .carte { max-width:none; padding:20px 22px; }
+  .chiffres { grid-template-columns:minmax(0,1fr) minmax(0,1fr); }
+  .deux, .photos, .resa { grid-template-columns:minmax(0,1fr); }
+  .recap { position:static; }
+}
+@media (prefers-reduced-motion:reduce) { h1 span b { animation:none; transform:none; } .carte { transition:none; } }
+</style>
+</head>
+<body>
+<div id="chargement"><div><div class="b"></div><div class="o"></div><p id="chargementNom"></p></div></div>
+<canvas id="scene3d" aria-hidden="true"></canvas>
+
+<header class="barre">
+  <a class="logo" href="#haut"><i></i><span id="logoNom"></span></a>
+  <span class="espace"></span>
+  <button class="pastille" id="langue" type="button">العربية</button>
+  <a class="btn btn-wa" data-resa href="#reservation"></a>
+</header>
+
+<main id="haut">
+  <section class="ecran accueil" data-etape="0">
+    <div>
+      <p class="surtitre" data-t="surtitre"></p>
+      <h1 id="titre"></h1>
+    </div>
+    <div class="bas">
+      <p class="chapo" data-t="chapo"></p>
+      <div class="actions">
+        <a class="btn btn-wa" data-resa href="#reservation"></a>
+        <a class="btn btn-ligne" href="#etape1" data-t="boutonDecouvrir"></a>
+      </div>
+      <p class="note" id="note"></p>
+    </div>
+  </section>
+  <div id="etapes"></div>
+</main>
+
+<div class="bord"></div>
+<section class="plein sombre" id="chiffres">
+  <h2 data-t="titreChiffres"></h2>
+  <div class="chiffres">
+    <div class="chiffre"><strong data-compte="note"></strong><span data-t="chiffreNote"></span></div>
+    <div class="chiffre"><strong data-compte="avis"></strong><span data-t="chiffreAvis"></span></div>
+    <div class="chiffre"><strong data-compte="jours"></strong><span data-t="chiffreJours"></span></div>
+    <div class="chiffre"><strong data-compte="heures"></strong><span data-t="chiffreHeures"></span></div>
+  </div>
+</section>
+<section class="plein" id="reservation">
+  <h2 data-t="titreReservation"></h2>
+  <div class="resa">
+    <form id="formulaire">
+      <div class="ligne2">
+        <label><span data-t="champJour"></span><input type="date" name="jour" id="jour" required></label>
+        <label><span data-t="champNom"></span><input name="nom" required autocomplete="name"></label>
+      </div>
+      <fieldset><legend data-t="champHeure"></legend><div class="choix" id="creneaux"></div></fieldset>
+      <div class="ligne2">
+        <fieldset><legend data-t="champDuree"></legend><div class="choix" id="durees"></div></fieldset>
+        <fieldset><legend data-t="champJoueurs"></legend><div class="choix" id="joueurs"></div></fieldset>
+      </div>
+      <label class="coche"><input type="checkbox" required><span data-t="consentement"></span></label>
+      <button class="btn btn-wa" type="submit" id="envoyer"></button>
+      <p class="source" data-t="sousReservation"></p>
+    </form>
+    <aside class="recap" aria-live="polite"><h3 id="recapTitre"></h3><dl id="recap"></dl></aside>
+  </div>
+</section>
+<section class="plein" id="infos" style="padding-top:0">
+  <div class="deux">
+    <div><h2 data-t="titreHoraires"></h2><p class="etat" id="etat"></p><ul class="horaires" id="horaires"></ul></div>
+    <div><h2 data-t="titreAvis"></h2><div class="avis" id="avis"></div><p class="source" data-t="sourceAvis"></p></div>
+  </div>
+</section>
+<section class="plein" id="photos" hidden style="padding-top:0"><h2 data-t="titrePhotos"></h2><div class="photos" id="listePhotos"></div></section>
+<section class="plein" id="visite" style="padding-top:0">
+  <h2 data-t="titreVisite"></h2>
+  <p class="adresse" id="adresse"></p>
+  <div class="actions"><a class="btn btn-ligne" id="carte" target="_blank" rel="noopener" data-t="boutonCarte"></a><a class="btn btn-ligne" id="tel"></a></div>
+</section>
+<footer><span id="pied"></span><span data-t="credits"></span></footer>
+<a class="flottant" id="flottant" href="#" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.4-.2z"/></svg></a>
+
+<script type="module">
+import { lancer } from '../moteur/moteur3d.js';
+import { construire, trajectoire } from './scene.js';
+const S = window.SITE;
+const WA = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm4.5 12.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.4-.2z"/></svg>';
+let L = new URLSearchParams(location.search).get('lang') === 'ar' ? 'ar' : 'fr';
+const t = (o) => (o && typeof o === 'object' && !Array.isArray(o) ? o[L] : o) ?? '';
+const nf = (v, d = 0) => v.toLocaleString(L === 'ar' ? 'ar-MA' : 'fr-FR', { minimumFractionDigits: d, maximumFractionDigits: d });
+const $ = (s) => document.querySelector(s);
+const etoiles = (n) => '★'.repeat(n) + '☆'.repeat(5 - n);
+const minutes = (h) => { const [a, b] = h.split(':').map(Number); return a * 60 + b; };
+const waLien = (texte) => `https://wa.me/${S.whatsapp}?text=${encodeURIComponent(texte)}`;
+const heuresParJour = (() => { const h = S.horaires[1]; return ((minutes(h[1]) - minutes(h[0]) + 1440) % 1440) / 60; })();
+
+function choix(nom, valeurs, libelles, coche) {
+  return valeurs.map((v, i) => `<label><input type="radio" name="${nom}" value="${v}" ${i === coche ? 'checked' : ''}><span dir="auto">${libelles[i]}</span></label>`).join('');
+}
+
+function remplir() {
+  document.documentElement.lang = L;
+  document.documentElement.dir = L === 'ar' ? 'rtl' : 'ltr';
+  document.title = `${t(S.nomLong)} · ${t(S.metier)}`;
+  $('#langue').textContent = L === 'ar' ? 'Français' : 'العربية';
+  $('#logoNom').textContent = S.nom;
+  $('#chargementNom').textContent = S.nom;
+  document.querySelectorAll('[data-t]').forEach((e) => { e.textContent = t(S.textes[e.dataset.t]); });
+  $('#titre').innerHTML = t(S.textes.titre).map((l) => `<span><b>${l}</b></span>`).join('');
+  document.querySelectorAll('[data-resa]').forEach((a) => { a.innerHTML = WA + `<span>${t(S.textes.boutonReserver)}</span>`; });
+  $('#envoyer').innerHTML = WA + `<span>${t(S.textes.boutonEnvoyer)}</span>`;
+  $('#flottant').href = waLien(t(S.textes.messageWhatsapp));
+  $('#note').innerHTML = `<b>${etoiles(Math.round(S.note.valeur))}</b> ` + t(S.textes.noteCourte).replace('{note}', nf(S.note.valeur, 1)).replace('{nombre}', nf(S.note.nombre));
+  $('#etapes').innerHTML = S.textes.etapes.map((e, i) => `<section class="ecran etape" id="etape${i + 1}" data-etape="${i + 1}"><div class="carte"><small>0${i + 1}</small><h2>${t(e.titre)}</h2><p>${t(e.texte)}</p></div></section>`).join('');
+  $('#avis').innerHTML = S.avis.map((a) => `<figure class="un-avis"><q dir="${a.dir || 'ltr'}">${a.texte}</q><div><b>${etoiles(a.etoiles)}</b> · ${a.nom}</div></figure>`).join('');
+  $('#adresse').textContent = t(S.adresse);
+  $('#carte').href = S.carte;
+  $('#tel').href = 'tel:+' + S.whatsapp; $('#tel').textContent = S.telephoneAffiche; $('#tel').dir = 'ltr';
+  $('#pied').textContent = `${t(S.nomLong)} · ${t(S.adresse)} · ${S.telephoneAffiche}`;
+  if (S.photos.length) { $('#photos').hidden = false; $('#listePhotos').innerHTML = S.photos.map((p) => `<figure><img src="${p.src}" alt="${t(p.legende)}" loading="lazy"><figcaption>${t(p.legende)}</figcaption></figure>`).join(''); }
+  // réservation
+  const garde = new FormData($('#formulaire'));
+  $('#creneaux').innerHTML = choix('heure', S.creneaux, S.creneaux, 4);
+  $('#durees').innerHTML = choix('duree', ['60', '90'], t(S.textes.durees), 1);
+  $('#joueurs').innerHTML = choix('joueurs', ['1', '2', '3', '4'], ['1', '2', '3', '4'], 3);
+  for (const k of ['heure', 'duree', 'joueurs']) { const v = garde.get(k); if (v) { const r = document.querySelector(`input[name=${k}][value="${v}"]`); if (r) r.checked = true; } }
+  const j = $('#jour'); const auj = new Date(); const iso = (d) => new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  j.min = iso(auj); if (!j.value) j.value = iso(auj);
+  $('#recapTitre').textContent = t(S.textes.titreReservation);
+  recap();
+  horaires();
+  observerCartes();
+  document.querySelectorAll('[data-compte]').forEach((e) => { e.dataset.fait = ''; e.textContent = '0'; });
+  observerChiffres();
+}
+
+function lectureResa() {
+  const f = new FormData($('#formulaire'));
+  const d = f.get('jour') ? new Date(f.get('jour') + 'T12:00') : null;
+  const jour = d ? d.toLocaleDateString(L === 'ar' ? 'ar-MA' : 'fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }) : '';
+  const duree = t(S.textes.durees)[f.get('duree') === '60' ? 0 : 1];
+  return { jour, heure: f.get('heure'), duree, joueurs: f.get('joueurs'), nom: f.get('nom') || '' };
+}
+function recap() {
+  const r = lectureResa();
+  $('#recap').innerHTML = [[S.textes.champJour, r.jour], [S.textes.champHeure, r.heure], [S.textes.champDuree, r.duree], [S.textes.champJoueurs, r.joueurs], [S.textes.champNom, r.nom || '—']]
+    .map(([k, v]) => `<dt>${t(k)}</dt><dd dir="auto">${v}</dd>`).join('');
+}
+
+function horaires() {
+  const maintenant = new Date(), j = maintenant.getDay();
+  const m = maintenant.getHours() * 60 + maintenant.getMinutes();
+  const h = S.horaires[j], hv = S.horaires[(j + 6) % 7];
+  const dans = (x, mm) => { const o = minutes(x[0]), f = minutes(x[1]); return f > o ? mm >= o && mm < f : mm >= o; };
+  // une ouverture qui passe minuit compte aussi pour le début de la nuit suivante
+  const ouvert = (h && dans(h, m)) || (hv && minutes(hv[1]) < minutes(hv[0]) && m < minutes(hv[1]));
+  $('#etat').textContent = t(ouvert ? S.textes.ouvert : S.textes.ferme);
+  $('#etat').className = 'etat' + (ouvert ? '' : ' ferme');
+  const ordre = [1, 2, 3, 4, 5, 6, 0];
+  $('#horaires').innerHTML = ordre.map((d) => `<li class="${d === j ? 'auj' : ''}"><span>${t(S.textes.jours)[d]}${d === j ? ' · ' + t(S.textes.aujourdhui) : ''}</span><span dir="ltr">${S.horaires[d] ? S.horaires[d].join(' – ') : '—'}</span></li>`).join('');
+}
+
+let obsCartes;
+function observerCartes() {
+  obsCartes?.disconnect();
+  obsCartes = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && e.target.classList.add('vue')), { threshold: 0.35 });
+  document.querySelectorAll('.carte').forEach((c) => obsCartes.observe(c));
+}
+function observerChiffres() {
+  const cibles = { note: [S.note.valeur, 1], avis: [S.note.nombre, 0], jours: [Object.keys(S.horaires).length, 0], heures: [heuresParJour, 0] };
+  const obs = new IntersectionObserver((es) => es.forEach((e) => {
+    if (!e.isIntersecting || e.target.dataset.fait) return;
+    e.target.dataset.fait = '1'; obs.unobserve(e.target);
+    const [v, d] = cibles[e.target.dataset.compte]; const t0 = performance.now();
+    const pas = (n) => { const k = Math.min(1, (n - t0) / 1400); e.target.textContent = nf(v * (1 - Math.pow(1 - k, 3)), d); if (k < 1) requestAnimationFrame(pas); };
+    requestAnimationFrame(pas);
+  }), { threshold: 0.6 });
+  document.querySelectorAll('[data-compte]').forEach((e) => obs.observe(e));
+}
+
+$('#langue').addEventListener('click', () => { L = L === 'fr' ? 'ar' : 'fr'; remplir(); });
+$('#formulaire').addEventListener('input', recap);
+$('#formulaire').addEventListener('change', recap);
+$('#formulaire').addEventListener('submit', (ev) => {
+  ev.preventDefault();
+  const r = lectureResa();
+  const lignes = L === 'ar'
+    ? [t(S.textes.messageWhatsapp), `النهار: ${r.jour}`, `الساعة: ${r.heure}`, `المدة: ${r.duree}`, `اللاعبين: ${r.joueurs}`, `الاسم: ${r.nom}`]
+    : [t(S.textes.messageWhatsapp), `Jour : ${r.jour}`, `Créneau : ${r.heure}`, `Durée : ${r.duree}`, `Joueurs : ${r.joueurs}`, `Nom : ${r.nom}`];
+  open(waLien(lignes.join('\n')), '_blank', 'noopener');
+});
+remplir();
+
+/* ---------- la scène : un terrain en plein air, du jour à la nuit ---------- */
+const plans = {
+  ordinateur: [
+    { pos: [3.1, 2.4, 4.3], cible: [0.1, 0.15, 0.1] },     // accueil : vue d'ensemble 3/4
+    { pos: [2.75, 0.42, 1.5], cible: [1.2, 0.32, -0.2] },   // au ras du gazon, contre la vitre
+    { pos: [0.9, 2.9, 1.9], cible: [0.0, 0.0, 0.0] },       // vue du dessus : lignes et filet
+    { pos: [0.1, 0.55, 2.55], cible: [-0.84, 0.12, 1.44] }, // le coin d'attente
+    { pos: [-3.4, 1.7, 3.3], cible: [0.0, 0.45, 0.0] },     // le soir : projecteurs
+  ],
+  telephone: [
+    { pos: [4.2, 3.6, 6.2], cible: [0.0, 0.05, 0.2] },
+    { pos: [3.4, 0.7, 2.6], cible: [0.9, 0.3, -0.2] },
+    { pos: [1.0, 4.6, 2.6], cible: [0.0, 0.0, 0.0] },
+    { pos: [0.3, 0.9, 3.6], cible: [-0.84, 0.15, 1.44] },
+    { pos: [-4.6, 2.5, 4.9], cible: [0.0, 0.4, 0.0] },
+  ],
+};
+let monde = null, moteur, nuitPage = false;
+const borne = (v) => Math.min(1, Math.max(0, v));
+try {
+  moteur = await lancer({
+    canvas: $('#scene3d'), base: '../moteur/', glb: null,
+    construire: async (c) => { monde = await construire(c); },
+    plans, decalage: { ordinateur: 0.26 }, zoneOmbre: 3.2, positionSoleil: [3, 5, 2.5], forceSoleil: 2.4, ombre: 0.25, focale: 32,
+    intro: [
+      { nom: 'o_gazon', debut: 0.0, hauteur: 0.15, tour: 0.2 },
+      { nom: 'o_fond_est', debut: 0.25, hauteur: 0.6 },
+      { nom: 'o_fond_ouest', debut: 0.35, hauteur: 0.6 },
+      { nom: 'o_cote_nord', debut: 0.5, hauteur: 0.5, tour: 0 },
+      { nom: 'o_cote_sud', debut: 0.6, hauteur: 0.5, tour: 0 },
+      { nom: 'o_filet', debut: 0.8, hauteur: 0.4, tour: 0 },
+      { nom: 'o_projecteurs', debut: 0.95, hauteur: 0.8, tour: 0 },
+      { nom: 'o_coin', debut: 1.15, hauteur: 0.5, tour: 0.6 },
+      { nom: 'o_jeu', debut: 1.5, hauteur: 0.4, tour: 0 },
+    ],
+    lumieres: ({ THREE, scene }) => {
+      // un faisceau par projecteur, éteint le jour
+      return monde.tetes.map((tete) => {
+        const p = new THREE.Vector3(); tete.getWorldPosition(p);
+        const s = new THREE.SpotLight(0xeaf6ff, 0, 7, 0.75, 0.6, 1.3);
+        s.position.copy(p); s.target.position.set(p.x * 0.4, 0, 0); scene.add(s, s.target); return s;
+      });
+    },
+    chaqueImage: ({ temps, extras, finIntro, etape, scene, soleil, contre }) => {
+      // la balle joue dès que le terrain est monté
+      const [x, y, z] = trajectoire(Math.max(0, temps - finIntro));
+      monde.balleJeu.position.set(x, y, z);
+      monde.balleJeu.rotation.x += 0.12; monde.balleJeu.rotation.z += 0.07;
+      // la nuit tombe à la dernière étape
+      const n = borne((etape - 3.0) / 0.9);
+      soleil.intensity = 2.4 * (1 - 0.9 * n);
+      soleil.color.setRGB(1, 0.94 - 0.2 * n, 0.86 - 0.25 * n);
+      contre.intensity = 0.6 * (1 - 0.5 * n);
+      scene.environmentIntensity = 0.75 * (1 - 0.72 * n);
+      monde.verreLed.emissiveIntensity = 3.2 * n;
+      extras.forEach((s) => { s.intensity = 9 * n; });
+      const nuit = n > 0.35 && scrollY < $('#chiffres').offsetTop - innerHeight * 0.4;
+      if (nuit !== nuitPage) { nuitPage = nuit; document.body.classList.toggle('nuit', nuit); }
+    },
+  });
+} catch (e) { console.warn('3D indisponible', e); $('#scene3d').style.display = 'none'; }
+$('#chargement').classList.add('fini');
+
+/* le défilement pilote la caméra */
+const ecrans = () => [...document.querySelectorAll('[data-etape]')];
+function suivreDefilement() {
+  const E = ecrans(); const y = scrollY + innerHeight / 2;
+  let p = 0;
+  for (let i = 0; i < E.length; i++) {
+    const r = E[i].getBoundingClientRect(); const c = r.top + scrollY + r.height / 2;
+    if (y >= c) p = i;
+    const suiv = E[i + 1]; if (suiv && y >= c) { const r2 = suiv.getBoundingClientRect(); const c2 = r2.top + scrollY + r2.height / 2; if (y < c2) p = i + (y - c) / (c2 - c); }
+  }
+  moteur?.allerA(p);
+  $('#flottant').classList.toggle('vu', scrollY > innerHeight * 0.6);
+}
+addEventListener('scroll', suivreDefilement, { passive: true });
+suivreDefilement();
+</script>
+</body>
+</html>

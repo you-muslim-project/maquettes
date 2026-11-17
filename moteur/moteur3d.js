@@ -36,8 +36,9 @@ export async function lancer(o) {
   soleil.position.set(...(o.positionSoleil ?? [2.5, 4.5, 3]));
   soleil.castShadow = true;
   soleil.shadow.mapSize.set(1536, 1536);
-  soleil.shadow.camera.left = -3; soleil.shadow.camera.right = 3;
-  soleil.shadow.camera.top = 3; soleil.shadow.camera.bottom = -3;
+  const zo = o.zoneOmbre ?? 3;
+  soleil.shadow.camera.left = -zo; soleil.shadow.camera.right = zo;
+  soleil.shadow.camera.top = zo; soleil.shadow.camera.bottom = -zo; soleil.shadow.camera.far = zo * 6;
   soleil.shadow.radius = 6; soleil.shadow.bias = -0.0004; soleil.shadow.normalBias = 0.02;
   scene.add(soleil);
   const contre = new THREE.DirectionalLight(0xcfe0ff, 0.6);
@@ -52,9 +53,10 @@ export async function lancer(o) {
   // chargement
   const draco = new DRACOLoader().setDecoderPath(o.base + 'vendor/addons/libs/draco/');
   const loader = new GLTFLoader().setDRACOLoader(draco);
-  const gltf = await new Promise((ok, ko) => loader.load(o.glb, ok, (e) => o.progression?.(e.total ? e.loaded / e.total : 0), ko));
-  const racine = gltf.scene;
+  // GLB facultatif : une scène peut aussi être bâtie en code (crochet « construire »)
+  const racine = o.glb ? (await new Promise((ok, ko) => loader.load(o.glb, ok, (e) => o.progression?.(e.total ? e.loaded / e.total : 0), ko))).scene : new THREE.Group();
   scene.add(racine);
+  if (o.construire) await o.construire({ THREE, racine, scene, renderer, loader });
   const objets = {};
   racine.traverse((n) => {
     if (n.isMesh) { n.castShadow = true; n.receiveShadow = true; }
@@ -75,7 +77,7 @@ export async function lancer(o) {
   }
 
   // lumières propres à la scène (ex. lampe de bureau qui s'allume)
-  const extras = o.lumieres ? o.lumieres({ THREE, scene, objets }) : [];
+  const extras = o.lumieres ? o.lumieres({ THREE, scene, objets, soleil, contre, sol, renderer }) : [];
 
   // entrée : chaque objet arrive d'en haut, l'un après l'autre
   const intro = (o.intro || []).map((e, i) => {
@@ -144,7 +146,7 @@ export async function lancer(o) {
     for (const [nom, e] of Object.entries(ecrans)) {
       if (e.def.dessiner(e.ctx, { temps, etape, etapeLissee, finIntro, lang: document.documentElement.lang })) e.tex.needsUpdate = true;
     }
-    o.chaqueImage?.({ temps, dt, objets, extras, finIntro, etape: etapeLissee });
+    o.chaqueImage?.({ temps, dt, objets, extras, finIntro, etape: etapeLissee, scene, soleil, contre, renderer });
     renderer.render(scene, camera);
   }
 
