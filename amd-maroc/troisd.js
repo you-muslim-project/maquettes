@@ -215,14 +215,38 @@ function whatsapp(ctx, t) {
 }
 
 // ---------- ce que montre chaque écran, étape par étape ----------
-let montre = -1, depuis = 0;
+// Étape 0 : les écrans font défiler nos derniers sites, l'un après l'autre, en glissant (visible dès l'ouverture).
+const SITES0 = ['padel', 'cuisine', 'ecole', 'salle'];
+const D0 = 6, GLISSE = 0.7;
+let montre = -1, depuis = 0, site0 = -1, choix0 = 0;
 function etapeDe(etapeLissee, temps) {
   const k = Math.max(0, Math.min(3, Math.round(etapeLissee)));
   if (k !== montre) {
-    montre = k; depuis = temps;
-    jouer([['maquette-salle-ordinateur', 'maquette-salle-telephone'], ['maquette-decorateur-ordinateur', 'maquette-decorateur-telephone'], ['maquette-traiteur', 'maquette-plombier'], []][k]);
+    montre = k; depuis = temps; site0 = -1;
+    if (k) jouer([[], ['maquette-decorateur-ordinateur', 'maquette-decorateur-telephone'], ['maquette-traiteur', 'maquette-plombier'], []][k]);
   }
   return k;
+}
+// quel site est à l'écran à l'étape 0, et où en est le glissement
+function siteDe(temps) {
+  const t = temps - depuis + choix0 * D0;
+  const i = Math.floor(t / D0) % SITES0.length, f = t % D0;
+  if (i !== site0) {
+    site0 = i;
+    const prec = SITES0[(i + SITES0.length - 1) % SITES0.length], cur = SITES0[i];
+    jouer([`maquette-${cur}-ordinateur`, `maquette-${cur}-telephone`, `maquette-${prec}-ordinateur`, `maquette-${prec}-telephone`]);
+    filmDe(`maquette-${cur}-ordinateur`).v.currentTime = 0; filmDe(`maquette-${cur}-telephone`).v.currentTime = 0;
+    dispatchEvent(new CustomEvent('site-ecran', { detail: { i, duree: D0 } }));
+  }
+  return { cur: SITES0[i], prec: SITES0[(i + SITES0.length - 1) % SITES0.length], g: lisse(f / GLISSE), premier: temps - depuis < D0 && !choix0 };
+}
+addEventListener('site-choisi', (e) => { choix0 = e.detail; montre = -1; });
+function defile(ctx, w, h, temps, format) {
+  const { cur, prec, g, premier } = siteDe(temps);
+  if (g < 1 && !premier) {
+    dessinerFilm(ctx, `maquette-${prec}-${format}`, -w * g, 0, w, h, temps);
+    dessinerFilm(ctx, `maquette-${cur}-${format}`, w * (1 - g), 0, w, h, temps);
+  } else dessinerFilm(ctx, `maquette-${cur}-${format}`, 0, 0, w, h, temps);
 }
 function fondu(ctx, w, h, temps) {
   const f = 1 - lisse((temps - depuis) / 0.4);
@@ -230,7 +254,7 @@ function fondu(ctx, w, h, temps) {
 }
 function ecranOrdi(ctx, { temps, etapeLissee }) {
   const k = etapeDe(etapeLissee, temps), t = temps - depuis;
-  if (k === 0) dessinerFilm(ctx, 'maquette-salle-ordinateur', 0, 0, OW, OH, temps);
+  if (k === 0) defile(ctx, OW, OH, temps, 'ordinateur');
   else if (k === 1) dessinerFilm(ctx, 'maquette-decorateur-ordinateur', 0, 0, OW, OH, temps);
   else if (k === 2) planning(ctx, t % 12);
   else devis(ctx, t % 11);
@@ -239,7 +263,7 @@ function ecranOrdi(ctx, { temps, etapeLissee }) {
 }
 function ecranTel(ctx, { temps, etapeLissee }) {
   const k = etapeDe(etapeLissee, temps), t = temps - depuis;
-  if (k === 0) dessinerFilm(ctx, 'maquette-salle-telephone', 0, 0, TW, TH, temps);
+  if (k === 0) defile(ctx, TW, TH, temps, 'telephone');
   else if (k === 1) dessinerFilm(ctx, 'maquette-decorateur-telephone', 0, 0, TW, TH, temps);
   else if (k === 2) reel(ctx, t % 18, temps);
   else whatsapp(ctx, t % 11);
@@ -250,19 +274,20 @@ function ecranTel(ctx, { temps, etapeLissee }) {
 // ---------- plans de caméra (une étape = un plan) ----------
 const plans = {
   ordinateur: [
-    { pos: [1.42, 1.46, 3.06], cible: [0.12, 0.7, -0.04] },
+    { pos: [1.3, 1.38, 2.78], cible: [0.1, 0.76, -0.04] },
     { pos: [0.5, 1.02, 1.55], cible: [0.27, 0.8, -0.06] },
     { pos: [1.12, 1.0, 1.3], cible: [0.32, 0.84, -0.05] },
     { pos: [-0.12, 1.02, 1.5], cible: [0.27, 0.8, -0.06] },
   ],
-  telephone: [
-    { pos: [1.33, 1.6, 4.43], cible: [-0.07, 0.14, -0.1] },
-    { pos: [0.3, 0.9, 2.4], cible: [0.3, 0.5, -0.05] },
-    { pos: [0.62, 0.84, 1.65], cible: [0.46, 0.52, 0.06] },
-    { pos: [0.04, 0.9, 2.4], cible: [0.27, 0.5, -0.05] },
+  telephone: [   // téléphone : le bureau entier en haut, la carte en dessous, rien ne le cache
+    { pos: [1.25, 2.1, 5.1], cible: [0.03, -0.42, -0.1] },
+    { pos: [0.45, 1.55, 3.9], cible: [0.2, 0.22, -0.05] },
+    { pos: [0.78, 1.45, 3.45], cible: [0.3, 0.28, 0.0] },
+    { pos: [-0.1, 1.55, 3.9], cible: [0.2, 0.22, -0.05] },
   ],
 };
 
+window.__plans = plans;
 let M = null;
 try {
   M = await lancer({

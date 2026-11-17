@@ -1043,6 +1043,17 @@
   .telephone::after { right: -3px; top: 24%; height: 13%; }
   .telephone video { display: block; width: 100%; height: auto; aspect-ratio: 480 / 1038; object-fit: cover; border-radius: 26px; background: #0b0a10; }
   .portable { width: min(620px, 86%); }
+  .vitrines-sur { margin: 0 0 28px; font: 600 13px/1.3 Figtree, sans-serif; letter-spacing: .08em; text-transform: uppercase; color: #086C8C; }
+  .vitrines-sur.avant { margin: 72px 0 24px; color: #5B6B7A; }
+  .ecrans.anciens { max-width: 760px; grid-template-columns: 150px minmax(0, 1fr) 150px; gap: 40px 32px; opacity: .82; filter: saturate(.85); }
+  .ecrans.anciens .telephone { width: 150px; border-radius: 26px; padding: 6px; }
+  .ecrans.anciens .telephone video { border-radius: 20px; }
+  .ecrans.anciens .metier { font-size: 14px; }
+  @media (max-width: 700px) {
+    .ecrans.anciens { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 14px; }
+    .ecrans.anciens .telephone { width: 100%; max-width: 130px; }
+    .vitrines-sur.avant { margin-top: 48px; }
+  }
   .portable .ecran { position: relative; padding: 12px 12px 16px; background: #12273C; border-radius: 16px 16px 4px 4px; box-shadow: inset 0 0 0 2px #2A4C6C, 0 28px 50px rgba(18, 39, 60, .22); }
   .portable .ecran::before { content: ""; position: absolute; top: 4px; left: 50%; width: 5px; height: 5px; margin-left: -2.5px; border-radius: 50%; background: #3A5875; }
   .portable .ecran::after { content: ""; position: absolute; inset: 12px 12px 16px; border-radius: 3px; pointer-events: none; background: linear-gradient(115deg, rgba(255, 255, 255, .07) 0 32%, transparent 32%); }
@@ -1413,7 +1424,15 @@
     <div class="contenu">
       <img class="pose-mobile" src="images/dev-montre-droite.webp" alt="" width="88" height="90" loading="lazy">
       <h2 id="vitrines-titre">Voici ce qu'a fait Dev pour les professionnels et les commerçants, en pilotant tout seul mon PC.</h2>
-      <ul class="ecrans">
+      <p class="vitrines-sur">Les derniers sites · exemples</p>
+      <ul class="ecrans nouveaux">
+        <li class="e-la"><div class="portable"><div class="ecran"><video muted loop playsinline preload="none" poster="images/maquette-padel-ordinateur.webp" data-src="videos/maquette-padel-ordinateur.mp4" aria-label="Site de démonstration qui défile sur ordinateur : Padel Hub"></video></div><div class="socle"></div></div><span class="metier">Club de padel</span></li>
+        <li class="e-pc"><div class="telephone"><video muted loop playsinline preload="none" poster="images/maquette-cuisine-telephone.webp" data-src="videos/maquette-cuisine-telephone.mp4" aria-label="Site de démonstration qui défile sur téléphone : Luxury Cuisine"></video></div><span class="metier">Cuisiniste</span></li>
+        <li class="e-pd"><div class="telephone"><video muted loop playsinline preload="none" poster="images/maquette-ecole-telephone.webp" data-src="videos/maquette-ecole-telephone.mp4" aria-label="Site de démonstration qui défile sur téléphone : Centre Najah"></video></div><span class="metier">Soutien scolaire</span></li>
+        <li class="e-lb"><div class="portable"><div class="ecran"><video muted loop playsinline preload="none" poster="images/maquette-cuisine-ordinateur.webp" data-src="videos/maquette-cuisine-ordinateur.mp4" aria-label="Site de démonstration qui défile sur ordinateur : Luxury Cuisine"></video></div><div class="socle"></div></div><span class="metier">Cuisiniste</span></li>
+      </ul>
+      <p class="vitrines-sur avant">Et avant eux</p>
+      <ul class="ecrans anciens">
         <li class="e-la"><div class="portable"><div class="ecran"><video muted loop playsinline preload="none" poster="images/maquette-salle-ordinateur.webp" data-src="videos/maquette-salle-ordinateur.mp4" aria-label="Site de démonstration qui défile sur ordinateur : Salle Les Orangers"></video></div><div class="socle"></div></div><span class="metier">Salle des fêtes</span></li>
         <li class="e-pc"><div class="telephone"><video muted loop playsinline preload="none" poster="images/maquette-plombier.webp" data-src="videos/maquette-plombier.mp4" aria-label="Site de démonstration qui défile sur téléphone : Plomberie Les Deux Rives"></video></div><span class="metier">Plomberie</span></li>
         <li class="e-pd"><div class="telephone"><video muted loop playsinline preload="none" poster="images/maquette-traiteur.webp" data-src="videos/maquette-traiteur.mp4" aria-label="Site de démonstration qui défile sur téléphone : Maison Amira Réceptions"></video></div><span class="metier">Traiteur</span></li>

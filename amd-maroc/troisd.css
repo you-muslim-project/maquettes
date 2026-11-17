@@ -38,8 +38,8 @@ html.sans-3d .heros.claire-h.bloc-3d .repli-2d[hidden] { display: block !importa
   .bloc-3d .etape3d { align-items: flex-end; padding: 0 14px 40px; }
   /* téléphone : la scène entière en haut, le texte en dessous sur un voile crème */
   .bloc-3d .etape3d[data-etape="0"] { padding-bottom: 24px; }
-  .bloc-3d .etape3d[data-etape="0"]::before { content: ""; position: absolute; inset: auto 0 0 0; height: 70%; pointer-events: none;
-    background: linear-gradient(rgba(244,237,226,0) 0%, rgba(244,237,226,.88) 22%, rgba(244,237,226,.94) 100%); }
+  .bloc-3d .etape3d[data-etape="0"]::before { content: ""; position: absolute; inset: auto 0 0 0; height: 58%; pointer-events: none;
+    background: linear-gradient(rgba(244,237,226,0) 0%, rgba(244,237,226,.9) 14%, rgba(244,237,226,.95) 100%); }
   .bloc-3d .etape3d .entete3d { position: relative; max-width: none; padding: 0 4px; }
   .heros.claire-h.bloc-3d h1 { font-size: 27px; }
   .heros.claire-h.bloc-3d .etiquette, .heros.claire-h.bloc-3d .ar { display: none; }
@@ -49,9 +49,26 @@ html.sans-3d .heros.claire-h.bloc-3d .repli-2d[hidden] { display: block !importa
   .heros.claire-h.bloc-3d .actions .btn { min-height: 48px; padding: 0 12px; font-size: 14px; gap: 7px; }
   .heros.claire-h.bloc-3d .actions .btn-wa { flex: 1; }
   .bloc-3d .carte3d { max-width: none; padding: 18px; }
+  /* téléphone : carte toujours opaque et au premier plan, pour qu'aucun meuble ne paraisse passer devant */
+  .bloc-3d .etape3d { z-index: 3; }
+  .bloc-3d .carte3d { opacity: 1; background: rgba(11,23,38,.97); }
   /* téléphone : carte courte pour laisser l'ordinateur et le téléphone entiers au-dessus (le détail est dans les sections liées) */
   .bloc-3d .carte3d .texte3d { display: none; }
   .bloc-3d .carte3d .titre3d { font-size: 21px; margin-bottom: 8px; }
   .bloc-3d .legende3d { bottom: 12px; font-size: 12px; }
   html.sans-3d .heros.claire-h.bloc-3d .ar { display: block; }
 }
+
+/* « Nos derniers sites » : les puces suivent le site qui défile sur les écrans du bureau (animation dès l'ouverture) */
+.bloc-3d .derniers { margin-top: 26px; }
+.bloc-3d .derniers-titre { margin: 0 0 10px; font: 600 13px/1.3 Figtree, sans-serif; letter-spacing: .06em; text-transform: uppercase; color: var(--gris); display: flex; align-items: center; gap: 8px; }
+.bloc-3d .derniers-titre i { width: 8px; height: 8px; border-radius: 50%; background: #E5484D; animation: direct 1.4s ease-in-out infinite; }
+@keyframes direct { 50% { opacity: .25; } }
+.bloc-3d .puces { display: flex; gap: 6px; flex-wrap: nowrap; }
+.bloc-3d .puces button { position: relative; overflow: hidden; display: flex; align-items: center; gap: 8px; padding: 4px 9px 4px 4px; border-radius: 11px; white-space: nowrap; flex: none; border: 1px solid rgba(11,23,38,.14); background: rgba(255,255,255,.55);
+  font: 600 12.5px/1.2 Figtree, sans-serif; color: var(--nuit); cursor: pointer; transition: background .4s, border-color .4s, transform .4s cubic-bezier(.16,1,.3,1), box-shadow .4s; }
+.bloc-3d .puces img { width: 18px; height: 38px; object-fit: cover; object-position: 0 0; border-radius: 5px; }
+.bloc-3d .puces button.on { background: #fff; border-color: rgba(8,108,140,.5); transform: translateY(-3px); box-shadow: 0 10px 22px rgba(11,23,38,.12); }
+.bloc-3d .puces b { position: absolute; left: 0; bottom: 0; height: 3px; width: 0; background: var(--cyan); }
+@keyframes remplit { from { width: 0; } to { width: 100%; } }
+@media (max-width: 759px) { .bloc-3d .derniers { display: none; } }

@@ -223,10 +223,11 @@
   }
 
   /* Carrousel de téléphones penchés : celui du milieu en grand, les voisins plus petits, presque collés */
-  .carrousel { position: relative; overflow: hidden; padding: 24px 0 8px; align-self: center; }
-  .piste { position: relative; height: calc(min(250px, 54vw) * 2.1625 + 60px); touch-action: pan-y; cursor: grab; user-select: none; -webkit-user-select: none; }
+  .carrousel { position: relative; overflow: hidden; padding: 24px 0 8px; align-self: center; container-type: inline-size; }
+  .carrousel .derriere { pointer-events: auto; }
+  .piste { position: relative; height: calc(min(250px, 37cqw) * 2.1625 + 60px); touch-action: pan-y; cursor: grab; user-select: none; -webkit-user-select: none; }
   .piste.tire { cursor: grabbing; }
-  .tel-c { position: absolute; left: 50%; top: 10px; width: min(250px, 54vw); margin: 0 0 0 calc(min(250px, 54vw) / -2); transition: transform .7s cubic-bezier(.2,.8,.2,1), opacity .7s, filter .7s; }
+  .tel-c { position: absolute; left: 50%; top: 10px; width: min(250px, 37cqw); margin: 0 0 0 calc(min(250px, 37cqw) / -2); transition: transform .7s cubic-bezier(.2,.8,.2,1), opacity .7s, filter .7s; }
   .tel-c .coque { aspect-ratio: 480 / 1038; border-radius: 40px; padding: 9px; background: linear-gradient(160deg, #2a4766, #0c1a2b); box-shadow: 0 30px 70px rgba(0,0,0,.5), 0 0 0 1px rgba(52,216,255,.25); }
   .tel-c.actif .coque { box-shadow: 0 40px 90px rgba(0,0,0,.55), 0 0 0 1px rgba(52,216,255,.35), 0 0 60px rgba(52,216,255,.18); }
   .tel-c video { width: 100%; height: 100%; object-fit: cover; object-position: 0 0; border-radius: 32px; display: block; background: #000; pointer-events: none; }
@@ -255,8 +256,8 @@
   }
 </style>
 <script type="importmap">{"imports":{"three":"../moteur/vendor/three.module.min.js","three/addons/":"../moteur/vendor/addons/"}}</script>
-<link rel="stylesheet" href="troisd.css?v=m11">
-<script type="module" src="troisd.js?v=m11"></script>
+<link rel="stylesheet" href="troisd.css?v=m12">
+<script type="module" src="troisd.js?v=m12"></script>
 </head>
 <body>
 
@@ -286,6 +287,15 @@
           <a class="btn btn-contour" href="#tarifs">Voir les prix</a>
         </div>
         <p class="rassure">L'exemple est gratuit. Vous ne payez que s'il vous plaît.</p>
+        <div class="derniers" aria-label="Nos derniers sites, à l'écran du bureau">
+          <p class="derniers-titre"><i></i>À l'écran : nos derniers sites · exemples</p>
+          <div class="puces">
+            <button type="button" data-site="0" class="on"><img src="images/maquette-padel-telephone.webp" alt="" width="34" height="74"><span>Club de padel</span><b></b></button>
+            <button type="button" data-site="1"><img src="images/maquette-cuisine-telephone.webp" alt="" width="34" height="74"><span>Cuisiniste</span><b></b></button>
+            <button type="button" data-site="2"><img src="images/maquette-ecole-telephone.webp" alt="" width="34" height="74"><span>Soutien scolaire</span><b></b></button>
+            <button type="button" data-site="3"><img src="images/maquette-salle-telephone.webp" alt="" width="34" height="74"><span>Salle des fêtes</span><b></b></button>
+          </div>
+        </div>
       </div>
     </div>
     <div class="etape3d" data-etape="1"><a class="carte3d" href="#tarifs"><p class="num">01 / 03 · Le site animé</p><p class="titre3d">Un site qu'on a envie de regarder jusqu'au bout.</p><p class="texte3d">Les images bougent quand on descend, vos réalisations défilent, et le client vous écrit sur WhatsApp ou vous appelle d'un seul geste.</p><span class="voir">Voir les prix ↓</span></a></div>
@@ -336,6 +346,9 @@
         </div>
         <div class="carrousel apparait" data-carrousel aria-roledescription="carrousel" aria-label="Exemples de sites animés">
           <div class="piste">
+            <figure class="tel-c"><div class="coque"><video src="videos/maquette-padel-telephone.mp4" poster="images/maquette-padel-telephone.webp" muted loop playsinline preload="none" aria-label="Site de démonstration qui défile : Club de padel"></video></div><figcaption>Club de padel · exemple</figcaption></figure>
+            <figure class="tel-c"><div class="coque"><video src="videos/maquette-cuisine-telephone.mp4" poster="images/maquette-cuisine-telephone.webp" muted loop playsinline preload="none" aria-label="Site de démonstration qui défile : Cuisiniste"></video></div><figcaption>Cuisiniste · exemple</figcaption></figure>
+            <figure class="tel-c"><div class="coque"><video src="videos/maquette-ecole-telephone.mp4" poster="images/maquette-ecole-telephone.webp" muted loop playsinline preload="none" aria-label="Site de démonstration qui défile : Soutien scolaire"></video></div><figcaption>Soutien scolaire · exemple</figcaption></figure>
             <figure class="tel-c"><div class="coque"><video src="videos/maquette-plombier.mp4" poster="images/maquette-plombier.webp" muted loop playsinline preload="none" aria-label="Site de démonstration qui défile : Plombier"></video></div><figcaption>Plombier · exemple</figcaption></figure>
             <figure class="tel-c"><div class="coque"><video src="videos/maquette-traiteur.mp4" poster="images/maquette-traiteur.webp" muted loop playsinline preload="none" aria-label="Site de démonstration qui défile : Traiteur"></video></div><figcaption>Traiteur · exemple</figcaption></figure>
             <figure class="tel-c"><div class="coque"><video src="videos/maquette-decorateur-telephone.mp4" poster="images/maquette-decorateur-telephone.webp" muted loop playsinline preload="none" aria-label="Site de démonstration qui défile : Décoration d'intérieur"></video></div><figcaption>Décoration d'intérieur · exemple</figcaption></figure>
@@ -347,14 +360,14 @@
       <div class="duo-bas apparait">
         <h3>Sur ordinateur comme sur téléphone.</h3>
         <p>Chaque site est fait pour les deux : vos clients le regardent sur leur téléphone, vous le montrez en grand sur l'ordinateur.</p>
-        <div class="duo" role="img" aria-label="Un ordinateur et un téléphone : le site d'exemple d'un décorateur d'intérieur défile sur les deux">
+        <div class="duo" role="img" aria-label="Un ordinateur et un téléphone : le site d'exemple d'un club de padel défile sur les deux">
           <div class="ordi-reel">
             <img src="images/ordi-bureau.webp" alt="" width="1521" height="936" loading="lazy">
-            <div class="ecran"><video src="videos/maquette-decorateur-ordinateur.mp4" poster="images/maquette-decorateur-ordinateur.webp" muted loop playsinline preload="none" data-lecture></video><i class="reflet"></i></div>
+            <div class="ecran"><video src="videos/maquette-padel-ordinateur.mp4" poster="images/maquette-padel-ordinateur.webp" muted loop playsinline preload="none" data-lecture></video><i class="reflet"></i></div>
           </div>
-          <div class="tel-duo"><video src="videos/maquette-decorateur-telephone.mp4" poster="images/maquette-decorateur-telephone.webp" muted loop playsinline preload="none" data-lecture></video></div>
+          <div class="tel-duo"><video src="videos/maquette-padel-telephone.mp4" poster="images/maquette-padel-telephone.webp" muted loop playsinline preload="none" data-lecture></video></div>
         </div>
-        <p class="legende-ordi">Décoration d'intérieur · exemple</p>
+        <p class="legende-ordi">Club de padel · exemple</p>
       </div>
     </div>
   </section>
@@ -514,18 +527,31 @@
   var wa = "https://wa.me/212659414774?text=" + encodeURIComponent("Salam Aleikoum, j'ai vu votre page AMD Project. Je voudrais un exemple pour mon commerce : ");
   document.querySelectorAll("[data-wa]").forEach(function (a) { a.href = wa; a.target = "_blank"; a.rel = "noopener"; });
 
+
+  // Puces « nos derniers sites » : suivent le site affiché sur les écrans 3D, et le choisissent au clic.
+  (function () {
+    var b = [].slice.call(document.querySelectorAll(".derniers .puces button")); if (!b.length) return;
+    addEventListener("site-ecran", function (e) {
+      b.forEach(function (x, k) { var on = k === e.detail.i; x.classList.toggle("on", on); var t = x.querySelector("b"); t.style.animation = "none"; void t.offsetWidth; t.style.animation = on ? "remplit " + e.detail.duree + "s linear forwards" : "none"; });
+    });
+    b.forEach(function (x, k) { x.addEventListener("click", function () { dispatchEvent(new CustomEvent("site-choisi", { detail: k })); }); });
+  })();
+
   // Mots du titre qui montent l'un après l'autre.
   (function () {
     var c = document.querySelector("[data-carrousel]"); if (!c) return;
-    var piste = c.querySelector(".piste"), tels = [].slice.call(c.querySelectorAll(".tel-c")), n = tels.length, i = 0, auto, vu = false;
+    var piste = c.querySelector(".piste"), tels = [].slice.call(c.querySelectorAll(".tel-c")), n = tels.length, i = 1, auto, vu = false;
     var points = c.querySelector(".points"); tels.forEach(function () { points.appendChild(document.createElement("i")); });
     function place() {
       tels.forEach(function (t, k) {
         var d = ((k - i) % n + n) % n; if (d > n / 2) d -= n;
-        var tr = "translateX(0) scale(.6) rotate(0deg)", op = 0, z = 1, f = "brightness(.7)";
-        if (d === 0) { tr = "translateX(0) scale(1) rotate(4deg)"; op = 1; z = 3; f = "none"; }
-        else if (d === -1) { tr = "translateX(-74%) scale(.8) rotate(-3deg)"; op = .9; z = 2; }
-        else if (d === 1) { tr = "translateX(74%) scale(.8) rotate(6deg)"; op = .9; z = 2; }
+        var tr = "translateX(0) scale(.5) rotate(0deg)", op = 0, z = 0, f = "brightness(.7)";
+        if (d === 0) { tr = "translateX(0) scale(1) rotate(4deg)"; op = 1; z = 4; f = "none"; }
+        else if (d === -1) { tr = "translateX(-66%) scale(.8) rotate(-3deg)"; op = 1; z = 3; f = "none"; }
+        else if (d === 1) { tr = "translateX(66%) scale(.8) rotate(6deg)"; op = 1; z = 3; f = "none"; }
+        // second plan : les sites précédents, plus petits, qui dépassent derrière
+        else if (d === -2) { tr = "translateX(-100%) scale(.6) rotate(-6deg)"; op = .75; z = 1; f = "brightness(.78) saturate(.85)"; }
+        else if (d === 2) { tr = "translateX(100%) scale(.6) rotate(8deg)"; op = .75; z = 1; f = "brightness(.78) saturate(.85)"; }
         t.style.transform = tr; t.style.opacity = op; t.style.zIndex = z; t.style.filter = f;
         t.classList.toggle("actif", d === 0);
         var v = t.querySelector("video");
