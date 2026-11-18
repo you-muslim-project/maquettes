@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Expert Deco Design · Salons sur mesure à Tanger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--accent:#D8B476;--fond:#EFE8DC;--titre:'Cormorant Garamond',Georgia,serif;--corps:'Manrope',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0}html{background:var(--fond)}
+body{font:16px/1.55 var(--corps);color:#1d1d1d;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+#piste{height:520vh;position:relative}
+#scene{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:#222}
+canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+#ombre{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,.38),rgba(0,0,0,0) 60%)}
+.barre{position:absolute;top:0;left:0;right:0;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:16px clamp(16px,4vw,48px);color:#fff;background:linear-gradient(rgba(0,0,0,.5),transparent)}
+.logo b{display:block;font:700 22px/1 var(--titre);letter-spacing:.02em}
+.logo small{font:600 10px/1.2 var(--corps);letter-spacing:.24em;text-transform:uppercase;color:#fff;opacity:.85;margin-top:4px;display:block}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:99px;padding:12px 20px;font:700 14px/1 var(--corps);text-decoration:none;background:var(--accent);color:#111;transition:transform .3s}
+.btn:active{transform:scale(.97)}
+.btn.l{background:rgba(255,255,255,.16);color:#fff;border:1px solid rgba(255,255,255,.5)}
+.chap{position:absolute;z-index:4;left:clamp(16px,5vw,72px);bottom:clamp(24px,12vh,120px);max-width:min(520px,88vw);color:#fff;padding:22px 24px;border-radius:20px;background:rgba(14,16,18,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);opacity:0;transform:translateY(24px);transition:opacity .6s,transform .8s cubic-bezier(.16,1,.3,1);pointer-events:none}
+.chap.on{opacity:1;transform:none;pointer-events:auto}
+.chap small{font:700 11px/1 var(--corps);letter-spacing:.26em;text-transform:uppercase;color:var(--accent)}
+.chap h1,.chap h2{font:600 clamp(32px,5.4vw,64px)/1.04 var(--titre);margin:10px 0 12px}
+.chap h2{font-size:clamp(26px,3.6vw,42px)}
+.chap p{font-size:clamp(15px,1.4vw,17px);color:rgba(255,255,255,.93)}
+.chap .rang{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+#indic{position:absolute;z-index:5;right:clamp(14px,3vw,36px);top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:8px}
+#indic i{width:6px;height:6px;border-radius:9px;background:rgba(255,255,255,.45);transition:.4s}#indic i.on{height:26px;background:var(--accent)}
+#defile{position:absolute;z-index:5;right:clamp(16px,5vw,72px);bottom:clamp(24px,12vh,120px);color:#fff;font:700 11px/1 var(--corps);letter-spacing:.26em;text-transform:uppercase;transition:opacity .5s;text-align:center}
+#defile::after{content:"";display:block;width:1px;height:34px;margin:10px auto 0;background:#fff;animation:fil 1.6s infinite}
+@keyframes fil{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+#fin{background:var(--fond);color:#1d1d1d;padding:clamp(48px,9vw,110px) clamp(18px,6vw,96px);display:grid;gap:26px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+#fin h2{font:600 clamp(28px,4vw,46px)/1.05 var(--titre);grid-column:1/-1}
+#fin .carte{background:#fff;border-radius:18px;padding:22px 24px;box-shadow:0 8px 30px rgba(0,0,0,.07)}
+#fin .carte b{display:block;font:700 12px/1 var(--corps);letter-spacing:.14em;text-transform:uppercase;color:#6b5a3a;margin-bottom:10px}
+#fin .btn{background:#111;color:#fff;margin-top:12px}
+.note{grid-column:1/-1;font-size:13px;color:#666}
+@media (max-width:700px){
+ .chap{left:12px;right:12px;bottom:calc(14px + env(safe-area-inset-bottom));max-width:none;padding:16px 18px}
+ .chap h1{font-size:34px}.chap h2{font-size:26px}.chap p{font-size:14.5px}
+ #ombre{background:linear-gradient(0deg,rgba(0,0,0,.45),rgba(0,0,0,0) 55%)}
+ #indic{display:none}#defile{display:none}.btn{padding:11px 16px;font-size:13px}
+}
+@media (prefers-reduced-motion:reduce){.chap{transition:none}}
+</style></head><body>
+<div id="piste"><section id="scene">
+ <canvas id="c"></canvas><div id="ombre"></div>
+ <header class="barre"><div class="logo"><b>Expert Deco Design</b><small>Tanger · Décorateur d’intérieur</small></div><a class="btn" href="https://wa.me/212681324976?text=Bonjour%20Expert%20Deco%20Design%2C%20je%20voudrais%20un%20devis." target="_blank" rel="noopener">WhatsApp</a></header>
+ <div class="chap" data-d="0" data-f="0.2"><small>Tanger · Décorateur d’intérieur</small><h1>Le salon qui vous ressemble.</h1><p>Salons marocains et modernes, sofas, chambres, plafonds et panneaux en bois : fabriqués sur mesure à Tanger.</p><div class="rang"><a class="btn" href="https://wa.me/212681324976?text=Bonjour%20Expert%20Deco%20Design%2C%20je%20voudrais%20un%20devis." target='_blank' rel='noopener'>Demander un devis</a></div></div><div class="chap" data-d="0.2" data-f="0.46"><small>Sur mesure</small><h2>Le canapé qui épouse votre pièce.</h2><p>Banquette d’angle, sofa ou salon marocain : il se dessine selon votre pièce et vos mesures.</p></div><div class="chap" data-d="0.46" data-f="0.72"><small>Plafond et panneaux en bois</small><h2>Le bois habille le plafond et le mur.</h2><p>Corniche lumineuse, lustre et tables basses : l’ambiance fait la pièce.</p></div><div class="chap" data-d="0.72" data-f="1.01"><small>L’atelier</small><h2>Parlons de votre salon.</h2><p>L’atelier vous répond sur WhatsApp. Rien n’est engagé avant votre accord.</p><div class="rang"><a class="btn" href="https://wa.me/212681324976?text=Bonjour%20Expert%20Deco%20Design%2C%20je%20voudrais%20un%20devis." target='_blank' rel='noopener'>Demander un devis</a></div></div>
+ <div id="indic"></div><div id="defile">Défiler</div>
+</section></div>
+<section id="fin"><h2>Passer à l’atelier</h2><div class="carte"><b>Téléphone</b>06 81 32 49 76<br><a class="btn" href="https://wa.me/212681324976" target="_blank" rel="noopener">Écrire sur WhatsApp</a></div><div class="carte"><b>Adresse</b>N° 63, Rue Al Quadissia, Tanger 90060<br><a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=Expert+Deco+Design+Tanger" target="_blank" rel="noopener">Ouvrir l’itinéraire</a></div><div class="carte"><b>Avis Google · 5,0 (5 avis)</b>« Les décorateurs sont des pros, ils fabriquent de la fourniture sur mesure, salons modernes ou marocains, avec de bons prix. » (Anthony, extrait)</div><p class="note">Exemple de maquette : images d’illustration, pas des réalisations de l’atelier. Aucun prix affiché.</p></section>
+<script>
+const NB=96, PC=innerWidth>700, DOSSIER=PC?'pc/':'tel/';
+const cv=document.getElementById('c'),cx=cv.getContext('2d'),imgs=new Array(NB+2);
+const url=i=>DOSSIER+'f'+String(i).padStart(3,'0')+'.webp';
+function charger(i){return new Promise(r=>{if(imgs[i])return r(imgs[i]);const im=new Image();im.onload=()=>{imgs[i]=im;r(im)};im.onerror=()=>r(null);im.src=url(i)})}
+function dim(){const d=Math.min(devicePixelRatio||1,2);cv.width=Math.round(innerWidth*d);cv.height=Math.round(innerHeight*d);dessiner(courant)}
+function dessiner(p){const i=Math.max(1,Math.min(NB,Math.round(1+p*(NB-1))));let im=imgs[i];
+ for(let k=1;k<NB&&!im;k++)im=imgs[i-k]||imgs[i+k];if(!im)return;
+ const W=cv.width,H=cv.height,s=Math.max(W/im.width,H/im.height),w=im.width*s,h=im.height*s;cx.drawImage(im,(W-w)/2,(H-h)/2,w,h)}
+let courant=0,cible=0;
+const piste=document.getElementById('piste');
+function lire(){const r=piste.getBoundingClientRect(),t=Math.max(1,r.height-innerHeight);cible=Math.max(0,Math.min(1,-r.top/t))}
+const chaps=[...document.querySelectorAll('.chap')],indic=document.getElementById('indic');
+chaps.forEach(()=>indic.appendChild(document.createElement('i')));
+function chapitres(p){chaps.forEach((c,i)=>{const on=p>=+c.dataset.d&&p<+c.dataset.f;c.classList.toggle('on',on);indic.children[i].classList.toggle('on',on)});
+ document.getElementById('defile').style.opacity=p<.03?1:0}
+let t0=null,intro=0;
+function boucle(t){
+ if(t0===null)t0=t;
+ // ouverture : la caméra avance seule sur les premières images tant qu'on n'a pas défilé
+ if(scrollY<4&&intro<1)intro=Math.min(1,(t-t0)/2600);
+ const pi=scrollY<4?0.09*(1-Math.pow(1-intro,3)):0;
+ const but=Math.max(cible,pi);
+ courant+=(but-courant)*0.14;if(Math.abs(but-courant)<0.0004)courant=but;
+ dessiner(courant);chapitres(cible);
+ requestAnimationFrame(boucle)}
+addEventListener('scroll',lire,{passive:true});addEventListener('resize',dim);
+(async()=>{await charger(1);dim();lire();requestAnimationFrame(boucle);
+ for(let i=2;i<=NB;i++){charger(i);if(i%6===0)await new Promise(r=>setTimeout(r,50))}})();
+</script></body></html>
