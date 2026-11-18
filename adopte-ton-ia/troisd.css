@@ -1,6 +1,6 @@
 /* Haut de page 3D (brouillon du 17/11/2026) : la scène reste collée pendant que les étapes défilent par-dessus. */
 .bloc-3d { position: relative; }
-.bloc-3d .piste3d { position: relative; }
+.bloc-3d .piste3d { position: relative; overflow: clip; }
 .bloc-3d .toile3d { position: sticky; top: 0; height: 100vh; height: 100svh; margin-bottom: -100vh; margin-bottom: -100svh; z-index: 0; pointer-events: none; }
 .bloc-3d .toile3d canvas { display: block; width: 100%; height: 100%; }
 .bloc-3d .toile3d::after { content: ""; position: absolute; inset: 0; pointer-events: none;

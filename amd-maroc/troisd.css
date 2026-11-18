@@ -1,7 +1,7 @@
 /* Haut de page 3D d'AMD Project Maroc (brouillon du 17/11/2026) : le bureau reste collé pendant que les étapes défilent par-dessus. */
 .heros.claire-h.bloc-3d { padding: 0; overflow: visible; }
 .heros.claire-h.bloc-3d::before { display: none; }
-.bloc-3d .piste3d { position: relative; }
+.bloc-3d .piste3d { position: relative; overflow: clip; }
 .bloc-3d .toile3d { position: sticky; top: 66px; height: calc(100vh - 66px); height: calc(100svh - 66px); margin-bottom: calc(66px - 100vh); margin-bottom: calc(66px - 100svh); z-index: 0; pointer-events: none; overflow: hidden; border-radius: 0 0 36px 36px; }
 .bloc-3d .toile3d canvas { display: block; width: 100%; height: 100%; }
 .bloc-3d .toile3d::after { content: ""; position: absolute; inset: 0; pointer-events: none;
