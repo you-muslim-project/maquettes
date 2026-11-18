@@ -78,7 +78,14 @@ function chat(ctx, k, t) {
   });
   // champ de saisie
   ctx.fillStyle = C.cote; rr(ctx, x + 16, H - 62, larg - 32, 44, 12); ctx.fill();
-  ctx.fillStyle = C.doux; ctx.font = police(14); ctx.textBaseline = 'middle'; ctx.fillText('Écris-moi quelque chose…', x + 32, H - 40);
+  ctx.font = police(14); ctx.textBaseline = 'middle';
+  if (FRAPPE.on) {
+    const n = Math.min(TEXTE_FRAPPE.length, Math.floor(FRAPPE.t * 13));   // une frappe toutes les ~75 ms
+    let tx = TEXTE_FRAPPE.slice(0, n);
+    while (ctx.measureText(tx).width > larg - 80) tx = tx.slice(tx.indexOf(' ') + 1);   // le champ défile
+    ctx.fillStyle = C.texte; ctx.fillText(tx, x + 32, H - 40);
+    if (Math.floor(FRAPPE.t * 3) % 2 === 0) { ctx.fillStyle = C.cyan; ctx.fillRect(x + 34 + ctx.measureText(tx).width, H - 50, 2, 20); }
+  } else { ctx.fillStyle = C.doux; ctx.fillText('Écris-moi quelque chose…', x + 32, H - 40); }
 }
 
 // zone centrale : x de 190 à W-380
@@ -226,6 +233,8 @@ function reseaux(ctx, t) {
   });
 }
 
+const FRAPPE = { on: false, t: 0 };   // Dev tape au clavier : l'écran écrit le texte en même temps
+const TEXTE_FRAPPE = 'Fais le devis de Mme Durand pour la pose du parquet, 32 m², et envoie-le-lui.';
 const SCENES = [facture, prospects, paperasse, cao, reseaux];
 let montre = -1, depuis = 0;
 function dessinerEcran(ctx, { temps, etapeLissee }) {
@@ -288,7 +297,16 @@ function construire({ THREE, scene, racine }) {
   halo.rotation.x = -Math.PI / 2; halo.renderOrder = 4; groupe.add(halo);
   // pour taper, il se place DEVANT le clavier (côté visiteur), le dos tourné vers nous, toujours au-dessus du plateau
   const k = new THREE.Box3().setFromObject(racine.getObjectByName('o_clavier'));
-  dev = { groupe, plans, anneau, halo, tex, pose: 'montre-droite', fondu: 1, plateau, gauche: cx - demi - 0.1, droite: cx + demi + 0.1,
+  // touches qui s'allument sous ses mains pendant la frappe
+  const touches = [];
+  const tw = (k.max.x - k.min.x) * 0.075, td = (k.max.z - k.min.z) * 0.17;
+  for (let r = 0; r < 3; r++) for (let c = 0; c < 9; c++) {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(tw, td), new THREE.MeshBasicMaterial({ color: 0x34d8ff, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending }));
+    m.rotation.x = -Math.PI / 2; m.renderOrder = 3;
+    m.position.set(k.min.x + (k.max.x - k.min.x) * (0.1 + 0.1 * c), k.max.y + 0.002, k.min.z + (k.max.z - k.min.z) * (0.22 + 0.28 * r));
+    scene.add(m); touches.push(m);
+  }
+  dev = { groupe, plans, anneau, halo, tex, touches, pose: 'montre-droite', fondu: 1, plateau, gauche: cx - demi - 0.1, droite: cx + demi + 0.1,
     centre: (k.min.x + k.max.x) / 2, z, zClavier: k.max.z + 0.15 };
   window.__dev = dev;
 }
@@ -308,7 +326,7 @@ function cycle(temps) {
     if (t >= e.duree) { t -= e.duree; continue; }
     const k = t / e.duree;
     if (e.type === 'pose') return { u: e.u, pose: e.pose, sink: 0, frappe: false, vol: 0 };
-    if (e.type === 'clavier') return { u: e.u, pose: 'dos', sink: 0, frappe: true, vol: 0, avant: 1 };
+    if (e.type === 'clavier') return { u: e.u, pose: 'dos', sink: 0, frappe: true, vol: 0, avant: 1, ft: t };
     if (e.type === 'vol') return { u: e.de + (e.a - e.de) * lisse(k), pose: e.a > e.de ? 'vol-droite' : 'vol-gauche', sink: 0, frappe: false, vol: Math.sin(Math.PI * k), avant: e.versClavier ? lisse(k) : 0 };
     // téléportation, comme dans l'appli (mascotte.css) : il S'ENFONCE dans son anneau (0,7 s), l'anneau se referme (1,1 s),
     // une pause de 0,25 s, puis l'anneau s'ouvre (0,5 s) et il EN SORT (0,7 s, après 0,35 s) au nouvel endroit.
@@ -339,7 +357,8 @@ function posX(u) {
 
 function animerDev({ temps }) {
   if (!dev || !M) return;
-  const { u, pose, sink, frappe, vol, apparait, avant = 0, ring } = cycle(temps);
+  const { u, pose, sink, frappe, vol, apparait, avant = 0, ring, ft = 0 } = cycle(temps);
+  FRAPPE.on = !!frappe; FRAPPE.t = ft;
   const [a, b] = dev.plans;
   if (pose && pose !== dev.pose) {
     a.material.map = b.material.map; b.material.map = dev.tex[pose]; b.material.needsUpdate = true; a.material.needsUpdate = true;
@@ -375,6 +394,7 @@ function animerDev({ temps }) {
   const ry = Math.atan2(cam.x - g.x, cam.z - g.z);
   for (const p of dev.plans) p.rotation.y = ry;
   dev.groupe.scale.setScalar(Math.max(0.001, lisse((temps - 1.0) / 0.7)));   // Dev arrive après les meubles
+  dev.touches.forEach((m, i) => { m.material.opacity = frappe ? Math.max(0, Math.sin(temps * 17 + i * 2.7) * Math.sin(temps * 9.3 + i * 1.3)) * 0.7 : 0; });
   const R = ring || { s: 1, b: 1, o: 1 };
   const pul = 1 + Math.sin(temps * 2.4) * 0.05;
   dev.anneau.scale.set(pul * R.s, pul * (R.s < 1 ? 0.3 + 0.7 * (R.s - 0.05) / 0.95 : R.s), 1); dev.anneau.position.y = 0;
