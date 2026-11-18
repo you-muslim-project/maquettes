@@ -1,7 +1,7 @@
 // Haut de page 3D d'Adopte ton IA (brouillon du 17/11/2026) : le bureau de Dev, rendu en direct.
 // L'écran du bureau montre la tâche de chaque étape (mêmes exemples de démonstration que le reste de la page),
 // Dev flotte à côté sur son anneau cyan. Le défilement pilote la caméra (moteur commun des maquettes).
-import { lancer } from '../moteur/moteur3d.js';
+import { lancer } from '../moteur/moteur3d.js?v=ch2';
 
 const $ = (s) => document.querySelector(s);
 const toile = $('#scene3d');

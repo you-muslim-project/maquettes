@@ -11,7 +11,14 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 const lisse = (t) => t * t * (3 - 2 * t);
 const sortie = (t) => 1 - Math.pow(1 - t, 3);
-const rebond = (t) => { const c = 1.4; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); };
+// 18/11 : vraie chute avec rebonds. Hauteur au-dessus du plateau (1 = départ, 0 = posé), jamais négative :
+// l'objet ne descend donc jamais sous la surface (l'ancienne courbe « easeOutBack » dépassait 1 et l'enfonçait dans le bureau).
+const chute = (t) => {
+  if (t >= 1) return 0;
+  if (t < 0.6) return 1 - Math.pow(t / 0.6, 2);
+  if (t < 0.82) { const u = (t - 0.6) / 0.22 * 2 - 1; return Math.max(0, 0.12 * (1 - u * u)); }
+  const u = (t - 0.82) / 0.18 * 2 - 1; return Math.max(0, 0.03 * (1 - u * u));
+};
 
 export async function lancer(o) {
   const canvas = o.canvas;
@@ -125,7 +132,7 @@ export async function lancer(o) {
     for (const e of intro) {
       const t = Math.min(1, Math.max(0, (temps - e.debut) / e.duree));
       e.n.visible = temps >= e.debut;
-      e.n.position.y = e.y0 + (1 - rebond(t)) * e.hauteur;
+      e.n.position.y = e.y0 + Math.max(0, chute(t)) * e.hauteur;
       e.n.rotation.y = e.r0 + (1 - sortie(t)) * e.tour;
       const s = 0.6 + 0.4 * sortie(t);
       e.n.scale.copy(e.s0).multiplyScalar(s);
@@ -156,7 +163,7 @@ export async function lancer(o) {
     requestAnimationFrame(boucle);
   }
   if (film) {
-    window.__film = { avancer: (dt) => image(dt), pret: true };
+    window.__film = { avancer: (dt) => image(dt), pret: true, intro };
     image(0);
   } else requestAnimationFrame((t) => { dernier = t; boucle(t); });
 

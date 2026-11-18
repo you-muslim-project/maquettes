@@ -1,7 +1,7 @@
 // Haut de page 3D d'AMD Project Maroc (brouillon du 17/11/2026) : un bureau en bois, un ordinateur et un téléphone.
 // Les deux écrans montrent ce qu'on installe, étape par étape : les vrais films des sites d'exemple, les réseaux
 // (planning du mois + réel), puis les automatisations (devis à l'en-tête + rappels WhatsApp). Exemples de démonstration.
-import { lancer } from '../moteur/moteur3d.js';
+import { lancer } from '../moteur/moteur3d.js?v=ch2';
 
 const toile = document.querySelector('#scene3d');
 const OW = 1152, OH = 720;      // écran de l'ordinateur (même format que les films de sites)
