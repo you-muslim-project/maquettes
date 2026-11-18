@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Expert Deco Design Tanger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&family=Manrope:wght@400;600;700&family=Noto+Kufi+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="parametres.js"></script>
+<script type="importmap">{ "imports": { "three": "../moteur-reel/vendor/three.module.min.js", "three/addons/": "../moteur-reel/vendor/addons/" } }</script>
+<style>
+:root { --fond:#F2ECE2; --texte:#1D2A2B; --accent:#B08D57; --second:#0F6B6B; --doux:#5F6A68; --sombre:#1D2A2B;
+  --titre:'Cormorant Garamond', Georgia, serif; --corps:'Manrope', system-ui, sans-serif;
+  --entree:cubic-bezier(.16,1,.3,1); --ressort:cubic-bezier(.34,1.56,.64,1); }
+[lang=ar] { --titre:'Noto Kufi Arabic', sans-serif; --corps:'Noto Kufi Arabic', sans-serif; }
+* { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; }
+body { background:var(--fond); color:var(--texte); font:16px/1.6 var(--corps); overflow-x:hidden; -webkit-font-smoothing:antialiased; }
+#decor { position:fixed; inset:0; z-index:0; background:linear-gradient(90deg, rgba(242,236,226,.92) 0%, rgba(242,236,226,.80) 34%, rgba(242,236,226,.35) 62%, rgba(242,236,226,.15) 100%), url(photos/decor-flou.jpg) center/cover; }
+#grain { position:fixed; inset:0; z-index:4; pointer-events:none; background:url(photos/grain.png); opacity:.07; mix-blend-mode:overlay; }
+#vignette { position:fixed; inset:0; z-index:4; pointer-events:none; background:radial-gradient(ellipse at 62% 50%, rgba(0,0,0,0) 55%, rgba(40,28,16,.16) 100%); }
+.plat #decor, .plat #grain, .plat #vignette { display:none; }
+#scene3d { position:fixed; inset:0; width:100%; height:100%; z-index:1; display:block; }
+a { color:inherit; }
+
+.barre { position:fixed; top:0; inset-inline:0; z-index:20; display:flex; align-items:center; gap:12px; padding:14px clamp(16px,4vw,48px); background:linear-gradient(var(--fond) 30%, rgba(242,236,226,0)); }
+.logo { display:flex; flex-direction:column; text-decoration:none; line-height:1; }
+.logo b { font:700 23px/1 var(--titre); letter-spacing:.02em; }
+.logo small { font:600 10px/1 var(--corps); letter-spacing:.32em; text-transform:uppercase; color:var(--accent); margin-top:5px; }
+[lang=ar] .logo b { font-size:19px; }
+[lang=ar] .logo small { letter-spacing:0; font-size:11px; }
+.barre .espace { flex:1; }
+.pastille { border:1px solid rgba(29,42,43,.35); background:transparent; border-radius:99px; padding:7px 14px; font:600 14px/1 var(--corps); cursor:pointer; color:inherit; }
+.btn { display:inline-flex; align-items:center; gap:10px; border:0; border-radius:99px; padding:15px 26px; font:700 15px/1 var(--corps); letter-spacing:.02em; cursor:pointer; text-decoration:none; transition:transform .5s var(--ressort), background-color .3s; }
+.btn-wa { background:var(--sombre); color:#F2ECE2; }
+.btn-wa:hover { background:var(--second); }
+.btn-wa svg { width:19px; height:19px; color:var(--accent); }
+.btn-ligne { background:rgba(255,255,255,.55); color:var(--texte); border:1px solid rgba(29,42,43,.25); backdrop-filter:blur(6px); }
+.btn:hover { transform:translateY(-2px); }
+
+#chargement { position:fixed; inset:0; z-index:30; display:grid; place-items:center; background:var(--fond); transition:opacity .9s var(--entree), visibility .9s; }
+#chargement.fini { opacity:0; visibility:hidden; }
+#chargement p { font:500 34px/1 var(--titre); font-style:italic; text-align:center; }
+#chargement i { display:block; height:1px; background:var(--accent); margin:16px auto 0; width:0; animation:trait 1.4s var(--entree) forwards; }
+@keyframes trait { to { width:160px; } }
+
+main { position:relative; z-index:2; }
+.ecran { min-height:100svh; display:flex; padding:0 clamp(18px,5vw,72px); pointer-events:none; }
+.ecran > * { pointer-events:auto; }
+.accueil { flex-direction:column; justify-content:center; max-width:min(560px,44vw); padding-top:70px; }
+.exemple { display:inline-block; align-self:flex-start; font:700 11px/1 var(--corps); letter-spacing:.14em; text-transform:uppercase; color:var(--second); border:1px solid rgba(15,107,107,.45); border-radius:99px; padding:6px 11px; margin-bottom:16px; background:rgba(255,255,255,.4); }
+[lang=ar] .exemple { letter-spacing:0; font-size:12px; }
+.surtitre { font:700 12px/1 var(--corps); letter-spacing:.3em; text-transform:uppercase; color:var(--accent); margin-bottom:20px; }
+[lang=ar] .surtitre { letter-spacing:0; font-size:14px; }
+h1 { font:500 clamp(50px,6.6vw,100px)/.95 var(--titre); letter-spacing:-.01em; }
+[lang=ar] h1 { letter-spacing:0; line-height:1.35; font-weight:700; font-size:clamp(38px,5vw,76px); }
+h1 span { display:block; overflow:hidden; padding-bottom:.06em; }
+h1 span b { display:block; font-weight:inherit; transform:translateY(105%); animation:monte 1.1s var(--entree) forwards; }
+h1 span:nth-child(2) b { animation-delay:.12s; } h1 span:nth-child(3) b { animation-delay:.24s; font-style:italic; color:var(--second); }
+@keyframes monte { to { transform:none; } }
+.chapo { font-size:clamp(16px,1.3vw,18px); color:var(--doux); max-width:42ch; margin:24px 0 30px; }
+.actions { display:flex; flex-wrap:wrap; gap:12px; align-items:center; }
+.note { margin-top:22px; font:600 14px/1 var(--corps); color:var(--doux); }
+
+.etape { align-items:center; }
+.carte { max-width:410px; background:rgba(250,247,241,.88); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border:1px solid rgba(176,141,87,.28);
+  border-radius:4px; padding:28px 30px; box-shadow:0 30px 60px -34px rgba(29,42,43,.5);
+  opacity:0; transform:translateY(30px); transition:opacity .9s var(--entree), transform .9s var(--entree); }
+.carte.vue { opacity:1; transform:none; }
+.carte small { font:700 12px/1 var(--corps); letter-spacing:.3em; color:var(--accent); }
+.carte h2 { font:500 clamp(30px,2.8vw,42px)/1.08 var(--titre); margin:12px 0 10px; }
+[lang=ar] .carte h2 { line-height:1.5; font-weight:700; font-size:clamp(24px,2.3vw,32px); }
+.carte p { color:var(--doux); }
+.nuancier { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+.nuancier button { display:flex; align-items:center; gap:8px; border:1px solid rgba(29,42,43,.18); background:#fff; border-radius:99px; padding:6px 13px 6px 6px; font:600 13px/1 var(--corps); cursor:pointer; color:var(--texte); transition:border-color .3s, transform .4s var(--ressort); }
+.nuancier button i { width:24px; height:24px; border-radius:50%; box-shadow:inset 0 0 0 1px rgba(0,0,0,.12); background-size:cover; }
+.nuancier button[aria-pressed=true] { border-color:var(--texte); transform:scale(1.06); box-shadow:0 0 0 2px var(--accent); }
+.petit { font-size:12px; color:var(--doux); margin-top:12px; }
+
+.plein { position:relative; z-index:3; background:var(--fond); padding:clamp(64px,9vw,120px) clamp(18px,5vw,72px); }
+.plein.sombre { background:var(--sombre); color:#F2ECE2; }
+.plein h2 { font:500 clamp(36px,4.6vw,66px)/1 var(--titre); letter-spacing:-.01em; margin-bottom:38px; }
+[lang=ar] .plein h2 { letter-spacing:0; line-height:1.4; font-weight:700; font-size:clamp(28px,3.6vw,50px); }
+.bord { position:relative; z-index:3; height:90px; margin-top:-90px; background:linear-gradient(rgba(29,42,43,0), var(--sombre)); pointer-events:none; }
+.gamme { list-style:none; counter-reset:g; border-top:1px solid rgba(242,236,226,.18); }
+.gamme li { counter-increment:g; display:flex; align-items:baseline; gap:24px; padding:22px 0; border-bottom:1px solid rgba(242,236,226,.18); font:500 clamp(26px,3.2vw,44px)/1.1 var(--titre);
+  opacity:0; transform:translateX(-30px); transition:opacity .8s var(--entree), transform .8s var(--entree), color .3s; }
+[lang=ar] .gamme li { font-size:clamp(20px,2.6vw,32px); font-weight:600; }
+[dir=rtl] .gamme li { transform:translateX(30px); }
+.gamme li.vue { opacity:1; transform:none; }
+.gamme li::before { content:'0' counter(g); font:700 13px/1 var(--corps); letter-spacing:.2em; color:var(--accent); }
+.gamme li:hover { color:var(--accent); }
+.abonnes { display:flex; align-items:baseline; gap:16px; margin-top:44px; flex-wrap:wrap; }
+.abonnes strong { font:500 clamp(54px,6.4vw,92px)/1 var(--titre); color:var(--accent); }
+.abonnes span { color:rgba(242,236,226,.7); }
+
+.photos { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%,240px), 1fr)); gap:14px; }
+.photos img { width:100%; height:auto; display:block; border-radius:4px; box-shadow:0 24px 50px -30px rgba(29,42,43,.55); }
+.photos figure { opacity:0; transform:translateY(24px); transition:opacity .9s var(--entree), transform .9s var(--entree); }
+.photos figure.vue { opacity:1; transform:none; }
+.avis { max-width:760px; }
+.avis .etoiles { color:var(--accent); font-size:22px; letter-spacing:.2em; margin-bottom:14px; }
+.avis blockquote { font:500 clamp(22px,2.4vw,32px)/1.35 var(--titre); }
+[lang=ar] .avis blockquote { font-size:20px; line-height:1.7; }
+.avis cite { display:block; margin-top:18px; font:600 14px/1 var(--corps); font-style:normal; color:rgba(242,236,226,.7); }
+
+.devis { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,1fr); gap:clamp(24px,5vw,72px); align-items:start; }
+form { display:grid; gap:16px; }
+.ligne2 { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
+label { display:grid; gap:6px; font-weight:600; font-size:14px; }
+input, select { font:16px var(--corps); padding:14px 16px; border-radius:4px; border:1px solid rgba(29,42,43,.2); background:#fff; color:var(--texte); width:100%; min-width:0; }
+fieldset { border:0; } legend { font-weight:600; font-size:14px; margin-bottom:8px; }
+.choix { display:flex; flex-wrap:wrap; gap:8px; }
+.choix input { position:absolute; opacity:0; width:1px; height:1px; }
+.choix span { display:inline-block; padding:10px 15px; border-radius:99px; border:1px solid rgba(29,42,43,.2); background:#fff; font-weight:600; font-size:14px; cursor:pointer; transition:background .25s, color .25s, transform .4s var(--ressort); }
+.choix input:checked + span { background:var(--sombre); color:#F2ECE2; border-color:var(--sombre); }
+.choix input:focus-visible + span { outline:2px solid var(--accent); outline-offset:2px; }
+.coche { display:flex; gap:10px; align-items:flex-start; font-weight:400; font-size:14px; color:var(--doux); }
+.coche input { margin-top:3px; width:18px; height:18px; flex:none; }
+.source { font-size:13px; color:var(--doux); margin-top:16px; }
+.sombre .source { color:rgba(242,236,226,.6); }
+.recap { background:#fff; border:1px solid rgba(176,141,87,.35); border-radius:4px; padding:28px; position:sticky; top:96px; }
+.recap h3 { font:500 28px/1.1 var(--titre); margin-bottom:18px; }
+.recap dl { display:grid; grid-template-columns:auto minmax(0,1fr); gap:12px 18px; }
+.recap dt { color:var(--doux); font-size:14px; } .recap dd { font-weight:700; text-align:end; }
+.recap .pastilles { display:flex; gap:8px; justify-content:flex-end; }
+.recap .pastilles i { width:22px; height:22px; border-radius:50%; box-shadow:inset 0 0 0 1px rgba(0,0,0,.15); background-size:cover; }
+.adresse { font:500 30px/1.3 var(--titre); margin-bottom:22px; }
+[lang=ar] .adresse { font-size:22px; }
+
+footer { position:relative; z-index:3; background:var(--sombre); color:rgba(242,236,226,.7); padding:34px clamp(18px,5vw,72px); font-size:13px; display:flex; flex-wrap:wrap; gap:10px 28px; justify-content:space-between; }
+.flottant { position:fixed; z-index:25; inset-inline-end:18px; bottom:18px; width:58px; height:58px; border-radius:50%; background:#25D366; display:grid; place-items:center; box-shadow:0 14px 30px -10px rgba(0,0,0,.45); transform:scale(0); transition:transform .6s var(--ressort); }
+.flottant.vu { transform:scale(1); }
+.flottant svg { width:30px; height:30px; fill:#fff; }
+
+@media (max-width:760px) {
+  .barre { padding:12px 14px; }
+  .barre .btn-wa { display:none; }
+  .logo b { font-size:21px; }
+  .accueil { max-width:none; justify-content:space-between; padding-top:84px; padding-bottom:18px; }
+  h1 { font-size:clamp(44px,13vw,58px); text-shadow:0 0 18px var(--fond), 0 0 6px var(--fond); }
+  [lang=ar] h1 { font-size:clamp(34px,10vw,44px); }
+  .accueil .bas { background:linear-gradient(rgba(242,236,226,0), var(--fond) 28%); margin:0 -18px; padding:40px 18px 0; }
+  .chapo { font-size:15px; margin:0 0 14px; }
+  .btn { padding:14px 20px; font-size:14px; }
+  .note { margin-top:12px; }
+  .etape { align-items:flex-end; padding-bottom:28px; }
+  .carte { max-width:none; padding:20px 22px; }
+  .carte h2 { margin:8px 0 6px; }
+  .nuancier { margin-top:12px; gap:8px; }
+  .devis, .ligne2 { grid-template-columns:minmax(0,1fr); }
+  .recap { position:static; }
+  .gamme li { gap:16px; padding:16px 0; }
+  .photos { grid-template-columns:minmax(0,1fr); }
+}
+@media (prefers-reduced-motion:reduce) { h1 span b { animation:none; transform:none; } .carte, .gamme li, .photos figure { transition:none; } }
+</style>
+</head>
+<body>
+<div id="chargement"><div><p id="chargementNom"></p><i></i></div></div>
+<div id="decor" aria-hidden="true"></div>
+<canvas id="scene3d" aria-hidden="true"></canvas>
+<div id="grain" aria-hidden="true"></div><div id="vignette" aria-hidden="true"></div>
+
+<header class="barre">
+  <a class="logo" href="#haut"><b id="logoNom"></b><small>Tanger</small></a>
+  <span class="espace"></span>
+  <button class="pastille" id="langue" type="button">العربية</button>
+  <a class="btn btn-wa" data-devis href="#devis"></a>
+</header>
+
+<main id="haut">
+  <section class="ecran accueil" data-etape="0">
+    <div>
+      <span class="exemple" data-t="exemple"></span>
+      <p class="surtitre" data-t="surtitre"></p>
+      <h1 id="titre"></h1>
+    </div>
+    <div class="bas">
+      <p class="chapo" data-t="chapo"></p>
+      <div class="actions">
+        <a class="btn btn-wa" data-devis href="#devis"></a>
+        <a class="btn btn-ligne" href="#etape2" data-t="boutonDecouvrir"></a>
+      </div>
+      <p class="note" id="note"></p>
+    </div>
+  </section>
+  <div id="etapes"></div>
+</main>
+
+<div class="bord"></div>
+<section class="plein sombre" id="gamme">
+  <h2 data-t="titreGamme"></h2>
+  <ul class="gamme" id="listeGamme"></ul>
+  <div class="abonnes"><strong data-compte="note">0</strong><span id="noteTexte"></span></div>
+</section>
+<section class="plein" id="realisations">
+  <h2 data-t="titreReal"></h2>
+  <div class="photos" id="photos"></div>
+  <p class="source" data-t="sourcePhotos"></p>
+</section>
+<section class="plein sombre" id="avis">
+  <h2 data-t="titreAvis"></h2>
+  <div class="avis"><div class="etoiles" aria-label="5 / 5">★★★★★</div><blockquote id="avisTexte" dir="ltr"></blockquote><cite id="avisAuteur"></cite></div>
+</section>
+<section class="plein" id="devis">
+  <h2 data-t="titreDevis"></h2>
+  <div class="devis">
+    <form id="formulaire">
+      <fieldset><legend data-t="champProjet"></legend><div class="choix" id="projets"></div></fieldset>
+      <div class="ligne2">
+        <label><span data-t="champFacade"></span><select name="facade" id="selFacade"></select></label>
+        <label><span data-t="champPlan"></span><select name="plan" id="selPlan"></select></label>
+      </div>
+      <div class="ligne2">
+        <label><span data-t="champLongueur"></span><input name="longueur" type="number" min="1" max="30" step="0.1" inputmode="decimal"></label>
+        <label><span data-t="champQuartier"></span><input name="quartier" autocomplete="address-level3"></label>
+      </div>
+      <label><span data-t="champNom"></span><input name="nom" required autocomplete="name"></label>
+      <label class="coche"><input type="checkbox" required><span data-t="consentement"></span></label>
+      <div><button class="btn btn-wa" type="submit" id="envoyer"></button></div>
+      <p class="source" data-t="sousDevis"></p>
+    </form>
+    <aside class="recap" aria-live="polite"><h3 data-t="recapTitre"></h3><dl id="recap"></dl></aside>
+  </div>
+</section>
+<section class="plein" id="visite" style="padding-top:0">
+  <h2 data-t="titreVisite"></h2>
+  <p class="adresse" id="adresse"></p>
+  <div class="actions"><a class="btn btn-ligne" id="carte" target="_blank" rel="noopener" data-t="boutonCarte"></a><a class="btn btn-ligne" id="tel"></a></div>
+</section>
+<footer><span id="pied"></span><span data-t="credits"></span></footer>
+<a class="flottant" id="flottant" href="#" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.4-.2z"/></svg></a>
+
+<script type="module">
+import { lancer } from '../moteur-reel/moteur3d.js?v=photo1';
+import { construire, texturePlan } from './scene.js';
+const S = window.SITE;
+const WA = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm4.5 12.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.4-.2z"/></svg>';
+let L = new URLSearchParams(location.search).get('lang') === 'ar' ? 'ar' : 'fr';
+const t = (o) => (o && typeof o === 'object' && !Array.isArray(o) ? o[L] : o) ?? '';
+const nf = (v, d = 0) => v.toLocaleString(L === 'ar' ? 'ar-MA' : 'fr-FR', { minimumFractionDigits: d, maximumFractionDigits: d });
+const $ = (s) => document.querySelector(s);
+const waLien = (texte) => `https://wa.me/${S.whatsapp}?text=${encodeURIComponent(texte)}`;
+
+const choix = { facade: S.facades[0].id, plan: S.plans[0].id };
+const imagesPlan = Object.fromEntries(S.plans.map((p) => [p.id, texturePlan(p)]));
+const pastille = (type, id) => {
+  if (type === 'facades') return `background:${S.facades.find((x) => x.id === id).couleur}`;
+  return `background-image:url(${imagesPlan[id].toDataURL('image/jpeg', 0.7)})`;
+};
+const fonds = Object.fromEntries([...S.facades.map((f) => ['facades' + f.id, pastille('facades', f.id)]), ...S.plans.map((p) => ['plans' + p.id, pastille('plans', p.id)])]);
+function nuancier(type) {
+  const cle = type === 'facades' ? 'facade' : 'plan';
+  return `<div class="nuancier" data-type="${type}">` + S[type].map((x) => `<button type="button" data-id="${x.id}" aria-pressed="${choix[cle] === x.id}"><i style="${fonds[type + x.id]}"></i>${t(x.nom)}</button>`).join('') + '</div>';
+}
+function choisir(cle, id) {
+  choix[cle] = id;
+  document.querySelectorAll(`.nuancier[data-type=${cle === 'facade' ? 'facades' : 'plans'}] button`).forEach((b) => b.setAttribute('aria-pressed', b.dataset.id === id));
+  $(cle === 'facade' ? '#selFacade' : '#selPlan').value = id;
+  appliquer?.(); recap();
+}
+document.addEventListener('click', (e) => { const b = e.target.closest('.nuancier button'); if (b) choisir(b.parentElement.dataset.type === 'facades' ? 'facade' : 'plan', b.dataset.id); });
+
+function remplir() {
+  document.documentElement.lang = L;
+  document.documentElement.dir = L === 'ar' ? 'rtl' : 'ltr';
+  document.title = `${t(S.nomLong)} · ${t(S.metier)}`;
+  $('#langue').textContent = L === 'ar' ? 'Français' : 'العربية';
+  $('#logoNom').textContent = S.nom; $('#chargementNom').textContent = S.nom;
+  document.querySelectorAll('[data-t]').forEach((e) => { e.textContent = t(S.textes[e.dataset.t]); });
+  $('#titre').innerHTML = t(S.textes.titre).map((l) => `<span><b>${l}</b></span>`).join('');
+  document.querySelectorAll('[data-devis]').forEach((a) => { a.innerHTML = WA + `<span>${t(S.textes.boutonDevis)}</span>`; });
+  $('#envoyer').innerHTML = WA + `<span>${t(S.textes.boutonEnvoyer)}</span>`;
+  $('#flottant').href = waLien(t(S.textes.messageWhatsapp));
+  $('#note').textContent = t(S.textes.noteCourte);
+  $('#etapes').innerHTML = S.textes.etapes.map((e, i) => `<section class="ecran etape" id="etape${i + 1}" data-etape="${i + 1}"><div class="carte"><small>0${i + 1}</small><h2>${t(e.titre)}</h2><p>${t(e.texte)}</p>${e.choix ? nuancier(e.choix) + `<p class="petit">${t(S.textes.noteCouleurs)}</p>` : ''}</div></section>`).join('');
+  $('#listeGamme').innerHTML = S.gamme.map((g) => `<li>${t(g)}</li>`).join('');
+  $('#noteTexte').textContent = L === 'ar' ? 'على Google · 5 تقييمات' : 'sur Google · 5 avis';
+  $('#photos').innerHTML = S.photos.map((p) => `<figure><img src="${p.src}" alt="${t(p.alt)}" loading="lazy"></figure>`).join('');
+  $('#avisTexte').textContent = '« ' + t(S.avis.texte) + ' »'; $('#avisAuteur').textContent = S.avis.auteur;
+  const garde = new FormData($('#formulaire')).getAll('projet');
+  $('#projets').innerHTML = S.gamme.map((g, i) => `<label><input type="checkbox" name="projet" value="${i}" ${garde.length ? (garde.includes(String(i)) ? 'checked' : '') : (i === 0 ? 'checked' : '')}><span>${t(g)}</span></label>`).join('');
+  $('#selFacade').innerHTML = S.facades.map((f) => `<option value="${f.id}">${t(f.nom)}</option>`).join('');
+  $('#selPlan').innerHTML = S.plans.map((p) => `<option value="${p.id}">${t(p.nom)}</option>`).join('');
+  $('#selFacade').value = choix.facade; $('#selPlan').value = choix.plan;
+  $('#adresse').textContent = t(S.adresse);
+  $('#carte').href = S.carte;
+  $('#tel').href = 'tel:+' + S.whatsapp; $('#tel').textContent = S.telephoneAffiche; $('#tel').dir = 'ltr';
+  $('#pied').textContent = `${t(S.nomLong)} · ${t(S.adresse)} · ${S.telephoneAffiche}`;
+  recap(); observer();
+  document.querySelectorAll('[data-compte]').forEach((e) => { e.dataset.fait = ''; e.textContent = nf(0, 1); });
+}
+
+function lecture() {
+  const f = new FormData($('#formulaire'));
+  const projets = f.getAll('projet').map((i) => t(S.gamme[+i]));
+  const fa = S.facades.find((x) => x.id === f.get('facade')), pl = S.plans.find((x) => x.id === f.get('plan'));
+  return { projets, fa, pl, longueur: f.get('longueur'), quartier: f.get('quartier'), nom: f.get('nom') };
+}
+function recap() {
+  const r = lecture(), T = S.textes;
+  const ligne = (k, v) => `<dt>${t(k)}</dt><dd dir="auto">${v || '—'}</dd>`;
+  $('#recap').innerHTML = ligne(T.champProjet, r.projets.join(', '))
+    + `<dt>${t(T.champFacade)}</dt><dd><span class="pastilles"><i style="${fonds['facades' + r.fa.id]}"></i>${t(r.fa.nom)}</span></dd>`
+    + `<dt>${t(T.champPlan)}</dt><dd><span class="pastilles"><i style="${fonds['plans' + r.pl.id]}"></i>${t(r.pl.nom)}</span></dd>`
+    + ligne(T.champLongueur, r.longueur ? nf(+r.longueur, 1) + ' m' : '') + ligne(T.champQuartier, r.quartier) + ligne(T.champNom, r.nom);
+}
+
+let obs;
+function observer() {
+  obs?.disconnect();
+  obs = new IntersectionObserver((es) => es.forEach((e) => {
+    if (!e.isIntersecting) return;
+    if (e.target.dataset.compte !== undefined) {
+      if (e.target.dataset.fait) return; e.target.dataset.fait = '1';
+      const t0 = performance.now();
+      const pas = (n) => { const k = Math.min(1, (n - t0) / 1600); e.target.textContent = nf(S.note * (1 - Math.pow(1 - k, 3)), 1); if (k < 1) requestAnimationFrame(pas); };
+      requestAnimationFrame(pas);
+    } else e.target.classList.add('vue');
+  }), { threshold: 0.35 });
+  document.querySelectorAll('.carte, .gamme li, .photos figure, [data-compte]').forEach((c, i) => { if (c.matches('.gamme li')) c.style.transitionDelay = (i % 5) * 0.08 + 's'; obs.observe(c); });
+}
+
+$('#langue').addEventListener('click', () => { L = L === 'fr' ? 'ar' : 'fr'; remplir(); });
+$('#formulaire').addEventListener('input', recap);
+$('#formulaire').addEventListener('change', (e) => {
+  if (e.target.id === 'selFacade') choisir('facade', e.target.value);
+  else if (e.target.id === 'selPlan') choisir('plan', e.target.value);
+  else recap();
+});
+$('#formulaire').addEventListener('submit', (ev) => {
+  ev.preventDefault();
+  const r = lecture(), T = S.textes;
+  const lignes = [t(T.messageWhatsapp), `${t(T.champProjet)} : ${r.projets.join(', ')}`, `${t(T.champFacade)} : ${t(r.fa.nom)}`, `${t(T.champPlan)} : ${t(r.pl.nom)}`];
+  if (r.longueur) lignes.push(`${t(T.champLongueur)} : ${r.longueur}`);
+  if (r.quartier) lignes.push(`${t(T.champQuartier)} : ${r.quartier}`);
+  lignes.push(`${t(T.champNom)} : ${r.nom}`);
+  open(waLien(lignes.join('\n')), '_blank', 'noopener');
+});
+
+/* ---------- la scène : le salon se monte, change de tissu, reçoit son plafond en bois, s'allume ---------- */
+let monde = null, moteur, appliquer = null;
+const PHOTO = !new URLSearchParams(location.search).has('plat'); if (!PHOTO) document.documentElement.classList.add('plat');
+const plans = {
+  ordinateur: [
+    { pos: [1.85, 0.95, 2.35], cible: [0.1, 0.4, -0.2] },     // accueil : vue d'ensemble
+    { pos: [1.1, 0.62, 1.55], cible: [-0.25, 0.3, -0.55] },   // banquette d'angle
+    { pos: [0.55, 0.5, 0.85], cible: [-0.35, 0.3, -0.5] },    // tissu, de près
+    { pos: [0.75, 0.3, 1.25], cible: [0.1, 0.95, -0.4] },     // plafond et panneaux en bois
+    { pos: [1.05, 0.62, 1.45], cible: [0.15, 0.6, -0.05] },   // lumières du soir
+  ],
+  telephone: [
+    { pos: [3.5, 1.5, 4.5], cible: [0.1, 0.5, -0.2] },
+    { pos: [2.0, 1.0, 2.9], cible: [-0.25, 0.3, -0.55] },
+    { pos: [1.3, 0.75, 1.9], cible: [-0.35, 0.3, -0.5] },
+    { pos: [1.4, 0.3, 2.3], cible: [0.1, 0.95, -0.4] },
+    { pos: [2.0, 0.95, 2.8], cible: [0.15, 0.6, -0.05] },
+  ],
+};
+const borne = (v) => Math.min(1, Math.max(0, v));
+try {
+  moteur = await lancer({
+    canvas: $('#scene3d'), base: '../moteur-reel/', glb: null,
+    photo: { hdri: '../moteur-reel/hdri/studio.hdr', ambiance: 1.3, forceSoleil: 1.9, contre: 0.25, aoRayon: 0.4, aoForce: 1.8 },
+    construire: async (c) => {
+      monde = await construire(c);
+      const { THREE } = c;
+      const texPlans = Object.fromEntries(Object.entries(imagesPlan).map(([id, can]) => { const x = new THREE.CanvasTexture(can); x.colorSpace = THREE.SRGBColorSpace; x.wrapS = x.wrapT = THREE.RepeatWrapping; x.anisotropy = 8; return [id, x]; }));
+      const texPlafond = Object.fromEntries(Object.entries(imagesPlan).map(([id, can]) => { const x = new THREE.CanvasTexture(can); x.colorSpace = THREE.SRGBColorSpace; x.wrapS = x.wrapT = THREE.RepeatWrapping; x.repeat.set(3, 2); x.anisotropy = 8; return [id, x]; }));
+      const cible = new THREE.Color();
+      appliquer = () => {
+        const f = S.facades.find((x) => x.id === choix.facade);
+        cible.set(f.couleur);
+        monde.plan.map = texPlans[choix.plan]; monde.plan.needsUpdate = true;
+        monde.plafond.map = texPlafond[choix.plan]; monde.plafond.needsUpdate = true;
+      };
+      monde.cible = cible; appliquer();
+      for (const k of ['facade', 'facadePlate', 'facadePanneau']) monde[k].color.copy(cible);
+      monde.lustreG.visible = false; monde.hautG.visible = false;
+    },
+    plans, decalage: { ordinateur: 0.22 }, zoneOmbre: 2.6, positionSoleil: [1.8, 3.4, 2.6], forceSoleil: 2.0, ombre: 0.2, focale: 34, exposition: 1.05,
+    intro: [
+      { nom: 'o_sol', debut: 0.0, hauteur: 0.1, tour: 0.2 },
+      { nom: 'o_murs', debut: 0.2, hauteur: 0.5, tour: 0 },
+      { nom: 'o_banquette', debut: 0.5, hauteur: 0.6, tour: 0 },
+      { nom: 'o_tables', debut: 0.9, hauteur: 0.4, tour: 0.3 },
+      { nom: 'o_deco', debut: 1.15, hauteur: 0.4, tour: 0.4 },
+    ],
+    lumieres: ({ THREE, scene }) => [[0.15, 0.95, 0.15], [-0.6, 1.0, -0.35]].map((p) => {
+      const l = new THREE.PointLight(0xffc98a, 0, 2.6, 1.6); l.position.set(...p); scene.add(l); return l;
+    }),
+    chaqueImage: ({ dt, etape, extras, scene, soleil }) => {
+      for (const k of ['facade', 'facadePlate', 'facadePanneau']) monde[k].color.lerp(monde.cible, Math.min(1, dt * 6));
+      // plafond en bois : apparaît en fondu en arrivant à l'étape « bois », avec le lustre
+      const p = borne((etape - 1.8) / 0.7);
+      monde.plafond.opacity = p; monde.hautG.visible = p > 0.01;
+      monde.lustreG.visible = p > 0.05; monde.lustreG.position.y = (1 - p) * 0.35;
+      // lumières du soir
+      const n = borne((etape - 3.1) / 0.8);
+      monde.led.opacity = n; monde.led.emissiveIntensity = 2.6 * n;
+      extras.forEach((l) => { l.intensity = 1.5 * n; });
+      soleil.intensity = 2.0 * (1 - 0.5 * n);
+      scene.environmentIntensity = (PHOTO ? 1.3 : 0.75) * (1 - 0.4 * n);
+    },
+  });
+} catch (e) { console.warn('3D indisponible', e); $('#scene3d').style.display = 'none'; }
+remplir();
+$('#chargement').classList.add('fini');
+
+const ecrans = () => [...document.querySelectorAll('[data-etape]')];
+function suivreDefilement() {
+  const E = ecrans(); const y = scrollY + innerHeight / 2;
+  let p = 0;
+  for (let i = 0; i < E.length; i++) {
+    const r = E[i].getBoundingClientRect(); const c = r.top + scrollY + r.height / 2;
+    if (y >= c) p = i;
+    const suiv = E[i + 1]; if (suiv && y >= c) { const r2 = suiv.getBoundingClientRect(); const c2 = r2.top + scrollY + r2.height / 2; if (y < c2) p = i + (y - c) / (c2 - c); }
+  }
+  moteur?.allerA(p);
+  $('#flottant').classList.toggle('vu', scrollY > innerHeight * 0.6);
+}
+addEventListener('scroll', suivreDefilement, { passive: true });
+suivreDefilement();
+</script>
+</body>
+</html>
