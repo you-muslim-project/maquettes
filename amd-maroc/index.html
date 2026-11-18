@@ -257,6 +257,7 @@
 </style>
 <script type="importmap">{"imports":{"three":"../moteur/vendor/three.module.min.js","three/addons/":"../moteur/vendor/addons/"}}</script>
 <link rel="stylesheet" href="troisd.css?v=m13">
+<link rel="stylesheet" href="panier.css?v=p1">
 <script type="module" src="troisd.js?v=ch1"></script>
 </head>
 <body>
@@ -330,7 +331,7 @@
         <p>Les images bougent quand on descend, vos réalisations défilent, et le client vous écrit sur WhatsApp ou vous appelle d'un seul geste.</p>
       </div>
       <div class="offre">
-        <div class="carte-prix apparait">
+        <div class="carte-prix apparait" data-svc="site">
           <span class="pastille">−70 % pour un nouveau client</span><br>
           <span class="ancien">3 970 DH</span>
           <div class="nouveau"><span data-compte="1190" data-depart="3970">1 190</span><small>DH</small></div>
@@ -380,49 +381,49 @@
         <p>Chaque outil se prend seul. Vous commencez par celui qui vous soulage le plus, et vous ajoutez les autres quand vous voulez.</p>
       </div>
       <div class="grille">
-        <article class="outil apparait">
+        <article class="outil apparait" data-svc="maps">
           <div class="icone"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></div>
           <h3>Fiche Google Maps soignée</h3>
           <p>Photos, horaires, services, description et réponses aux avis : la fiche que vos clients trouvent avant même votre site.</p>
           <div class="prix">490 DH<small>une seule fois</small></div>
         </article>
-        <article class="outil apparait">
+        <article class="outil apparait" data-svc="clients">
           <div class="icone"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18.5 20a6.5 6.5 0 0 0-2.5-5.1"/></svg></div>
           <h3>Fichier clients</h3>
           <p>Tous vos clients et prospects au même endroit : qui a demandé quoi, qui rappeler, quel devis attend une réponse. Sur l'ordinateur et le téléphone.</p>
           <div class="prix">1 990 DH<small>installation, puis 190 DH par mois</small></div>
         </article>
-        <article class="outil apparait">
+        <article class="outil apparait" data-svc="devis">
           <div class="icone"><svg viewBox="0 0 24 24"><path d="M6 2.5h8l4 4v15H6z"/><path d="M14 2.5v4h4M9 12h6M9 16h6"/></svg></div>
           <h3>Devis et factures</h3>
           <p>Des devis et factures propres, à votre en-tête, avec ICE, IF et numérotation qui se suit. Prêts à envoyer en PDF sur WhatsApp.</p>
           <div class="prix">990 DH<small>une seule fois</small></div>
         </article>
-        <article class="outil apparait">
+        <article class="outil apparait" data-svc="rappels">
           <div class="icone"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 20a2 2 0 0 1-3.4 0"/></svg></div>
           <h3>Rappels et relances WhatsApp</h3>
           <p>Le rappel du rendez-vous la veille, la relance du devis resté sans réponse, le petit mot pour un paiement en retard : envoyés à votre place.</p>
           <div class="prix">1 490 DH<small>installation, puis 150 DH par mois</small></div>
         </article>
-        <article class="outil apparait">
+        <article class="outil apparait" data-svc="rdv">
           <div class="icone"><svg viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4M8 14h3"/></svg></div>
           <h3>Prise de rendez-vous en ligne</h3>
           <p>Vos clients choisissent un créneau libre depuis votre site, vous recevez la demande sur WhatsApp. Idéal pour cabinets, auto-écoles et salons.</p>
           <div class="prix">990 DH<small>ajouté à votre site</small></div>
         </article>
-        <article class="outil apparait">
+        <article class="outil apparait" data-svc="stock">
           <div class="icone"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg></div>
           <h3>Stock et ventes</h3>
           <p>Ce qui sort, ce qui reste, ce qui manque, et combien vous avez vendu ce mois-ci, sur un seul tableau clair.</p>
           <div class="prix">2 490 DH<small>installation, puis 190 DH par mois</small></div>
         </article>
-        <article class="outil apparait">
+        <article class="outil apparait" data-svc="pub">
           <div class="icone"><svg viewBox="0 0 24 24"><path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg></div>
           <h3>Publicité Facebook et Instagram</h3>
           <p>Vos annonces montées, ciblées sur votre ville et suivies chaque semaine. Le budget de la publicité reste le vôtre, payé à part.</p>
           <div class="prix">990 DH<small>par mois de gestion</small></div>
         </article>
-        <article class="outil apparait">
+        <article class="outil apparait" data-svc="mesure">
           <div class="icone"><svg viewBox="0 0 24 24"><rect x="5" y="2.5" width="14" height="19" rx="3"/><path d="M10 18.5h4"/><path d="M9 8l2 2 4-4"/></svg></div>
           <h3>Outil sur mesure</h3>
           <p>Une application faite pour la façon dont vous travaillez : commandes, suivi d'élèves, planning d'équipe, bons de livraison…</p>
@@ -440,7 +441,7 @@
         <p>On prépare vos publications, on les montre avant, et on les publie pour vous chaque semaine.</p>
       </div>
       <div class="formules">
-        <div class="formule apparait">
+        <div class="formule apparait" data-svc="presence">
           <h3>Présence</h3>
           <p style="color:var(--doux)">Pour être vu régulièrement.</p>
           <div class="prix">1 490 DH <span>par mois</span></div>
@@ -450,7 +451,7 @@
             <li>Planning du mois validé par vous</li>
           </ul>
         </div>
-        <div class="formule mise apparait">
+        <div class="formule mise apparait" data-svc="croissance">
           <h3>Croissance</h3>
           <p style="color:var(--doux)">Pour attirer de nouveaux clients.</p>
           <div class="prix">2 490 DH <span>par mois</span></div>
@@ -466,7 +467,7 @@
 
   <section class="claire">
     <div class="conteneur">
-      <div class="pack apparait">
+      <div class="pack apparait" data-svc="pack">
         <div>
           <span class="pastille">Pack Commerce</span>
           <h2>Site animé + fiche Google Maps + fichier clients.</h2>
@@ -595,5 +596,6 @@
   }, { threshold: 0.2 });
   document.querySelectorAll(".apparait").forEach(function (el, i) { el.style.transitionDelay = (i % 4) * 0.08 + "s"; obs.observe(el); });
 </script>
+<script src="panier.js?v=p1"></script>
 </body>
 </html>
