@@ -251,11 +251,11 @@ const SEQUENCE = [   // u : 0 = à gauche de l'écran, 1 = à droite, 0.5 = deva
   { type: 'pose', pose: 'montre-droite', u: 0, duree: 4.5 },
   { type: 'vol', de: 0, a: 1, duree: 3 },
   { type: 'pose', pose: 'montre-gauche', u: 1, duree: 4.5 },
-  { type: 'tele', de: 1, a: 0, duree: 1.6, arrivee: 'salut' },
+  { type: 'tele', de: 1, a: 0, duree: 2.45, arrivee: 'salut' },
   { type: 'pose', pose: 'salut', u: 0, duree: 2.4 },
   { type: 'vol', de: 0, a: 0.5, duree: 2, versClavier: true },
   { type: 'clavier', u: 0.5, duree: 5 },
-  { type: 'tele', de: 0.5, a: 1, duree: 1.6, arrivee: 'pouce' },
+  { type: 'tele', de: 0.5, a: 1, duree: 2.45, arrivee: 'pouce' },
   { type: 'pose', pose: 'pouce', u: 1, duree: 2.4 },
   { type: 'vol', de: 1, a: 0, duree: 3 },
 ];
@@ -286,33 +286,50 @@ function construire({ THREE, scene, racine }) {
   g.fillStyle = d; g.fillRect(0, 0, 128, 128);
   const halo = new THREE.Mesh(new THREE.PlaneGeometry(0.4, 0.4), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
   halo.rotation.x = -Math.PI / 2; halo.renderOrder = 4; groupe.add(halo);
-  // colonne de lumière de la téléportation (invisible le reste du temps)
-  const colonne = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.12, 0.42, 32, 1, true),
-    new THREE.MeshBasicMaterial({ color: 0x34d8ff, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide }));
-  colonne.position.y = 0.2; colonne.renderOrder = 7; groupe.add(colonne);
   // pour taper, il se place DEVANT le clavier (côté visiteur), le dos tourné vers nous, toujours au-dessus du plateau
   const k = new THREE.Box3().setFromObject(racine.getObjectByName('o_clavier'));
-  dev = { groupe, plans, anneau, halo, colonne, tex, pose: 'montre-droite', fondu: 1, plateau, gauche: cx - demi - 0.1, droite: cx + demi + 0.1,
+  dev = { groupe, plans, anneau, halo, tex, pose: 'montre-droite', fondu: 1, plateau, gauche: cx - demi - 0.1, droite: cx + demi + 0.1,
     centre: (k.min.x + k.max.x) / 2, z, zClavier: k.max.z + 0.15 };
   window.__dev = dev;
 }
 const LEVITE = 0.07;   // hauteur de l'anneau au-dessus du plateau
 
 // où est Dev dans la séquence : position u, pose, visibilité (téléportation), frappe au clavier
+function bez(x1, y1, x2, y2, t) {   // cubic-bezier CSS
+  if (t <= 0) return 0; if (t >= 1) return 1;
+  let a = 0, b = 1, m = 0.5;
+  for (let i = 0; i < 24; i++) { m = (a + b) / 2; const x = 3 * (1 - m) * (1 - m) * m * x1 + 3 * (1 - m) * m * m * x2 + m * m * m; if (x < t) a = m; else b = m; }
+  return 3 * (1 - m) * (1 - m) * m * y1 + 3 * (1 - m) * m * m * y2 + m * m * m;
+}
 function cycle(temps) {
-  if (temps < 2.2) return { u: 0, pose: 'montre-droite', vis: 1, frappe: false, vol: 0 };
+  if (temps < 2.2) return { u: 0, pose: 'montre-droite', sink: 0, frappe: false, vol: 0 };
   let t = ((temps - 2.2) % CYCLE + CYCLE) % CYCLE;
   for (const e of SEQUENCE) {
     if (t >= e.duree) { t -= e.duree; continue; }
     const k = t / e.duree;
-    if (e.type === 'pose') return { u: e.u, pose: e.pose, vis: 1, frappe: false, vol: 0 };
-    if (e.type === 'clavier') return { u: e.u, pose: 'dos', vis: 1, frappe: true, vol: 0, avant: 1 };
-    if (e.type === 'vol') return { u: e.de + (e.a - e.de) * lisse(k), pose: e.a > e.de ? 'vol-droite' : 'vol-gauche', vis: 1, frappe: false, vol: Math.sin(Math.PI * k), avant: e.versClavier ? lisse(k) : 0 };
-    // téléportation : il se dissout en lumière d'un côté, puis se reforme de l'autre
-    if (k < 0.5) return { u: e.de, pose: null, vis: 1 - lisse(k / 0.5), frappe: false, vol: 0, avant: e.de === 0.5 ? 1 : 0 };
-    return { u: e.a, pose: e.arrivee, vis: lisse((k - 0.5) / 0.5), frappe: false, vol: 0, apparait: true };
+    if (e.type === 'pose') return { u: e.u, pose: e.pose, sink: 0, frappe: false, vol: 0 };
+    if (e.type === 'clavier') return { u: e.u, pose: 'dos', sink: 0, frappe: true, vol: 0, avant: 1 };
+    if (e.type === 'vol') return { u: e.de + (e.a - e.de) * lisse(k), pose: e.a > e.de ? 'vol-droite' : 'vol-gauche', sink: 0, frappe: false, vol: Math.sin(Math.PI * k), avant: e.versClavier ? lisse(k) : 0 };
+    // téléportation, comme dans l'appli (mascotte.css) : il S'ENFONCE dans son anneau (0,7 s), l'anneau se referme (1,1 s),
+    // une pause de 0,25 s, puis l'anneau s'ouvre (0,5 s) et il EN SORT (0,7 s, après 0,35 s) au nouvel endroit.
+    const ts = k * e.duree;
+    if (ts < 1.1) {
+      const d = ts < 0.7 * 0.15 ? -0.04 * bez(0.55, 0, 0.8, 0.2, ts / (0.7 * 0.15)) : -0.04 + 1.12 * bez(0.55, 0, 0.8, 0.2, Math.min(1, (ts - 0.105) / 0.595));
+      const q = ts / 1.1;
+      const ring = q < 0.55 ? { s: 1 + 0.12 * bez(0.42, 0, 0.58, 1, q / 0.55), b: 1 + 1.4 * bez(0.42, 0, 0.58, 1, q / 0.55), o: 1 }
+        : { s: 1.12 - 1.07 * bez(0.42, 0, 0.58, 1, (q - 0.55) / 0.45), b: 2.4 + 0.6 * bez(0.42, 0, 0.58, 1, (q - 0.55) / 0.45), o: 1 - bez(0.42, 0, 0.58, 1, (q - 0.55) / 0.45) };
+      return { u: e.de, pose: null, sink: ts >= 0.7 ? 1.08 : d, frappe: false, vol: 0, avant: e.de === 0.5 ? 1 : 0, ring };
+    }
+    const ta = ts - 1.35;   // 1,1 s de départ + 0,25 s de pause
+    if (ta < 0) return { u: e.a, pose: e.arrivee, sink: 1.08, frappe: false, vol: 0, apparait: true, ring: { s: 0.05, b: 3, o: 0 } };
+    const qa = Math.min(1, ta / 0.5);
+    const ring = qa < 0.6 ? { s: 0.05 + 1.07 * bez(0, 0, 0.58, 1, qa / 0.6), b: 3 - 0.6 * (qa / 0.6), o: Math.min(1, qa / 0.6 * 1.5) }
+      : { s: 1.12 - 0.12 * bez(0, 0, 0.58, 1, (qa - 0.6) / 0.4), b: 2.4 - 1.4 * ((qa - 0.6) / 0.4), o: 1 };
+    const tm = (ta - 0.35) / 0.7;
+    const sink = tm <= 0 ? 1.08 : tm >= 1 ? 0 : tm < 0.85 ? 1.08 - 1.12 * bez(0.2, 0.8, 0.45, 1, tm / 0.85) : -0.04 + 0.04 * bez(0.2, 0.8, 0.45, 1, (tm - 0.85) / 0.15);
+    return { u: e.a, pose: e.arrivee, sink, frappe: false, vol: 0, apparait: true, ring };
   }
-  return { u: 0, pose: 'montre-droite', vis: 1, frappe: false, vol: 0 };
+  return { u: 0, pose: 'montre-droite', sink: 0, frappe: false, vol: 0 };
 }
 
 function posX(u) {
@@ -322,14 +339,14 @@ function posX(u) {
 
 function animerDev({ temps }) {
   if (!dev || !M) return;
-  const { u, pose, vis, frappe, vol, apparait, avant = 0 } = cycle(temps);
+  const { u, pose, sink, frappe, vol, apparait, avant = 0, ring } = cycle(temps);
   const [a, b] = dev.plans;
   if (pose && pose !== dev.pose) {
     a.material.map = b.material.map; b.material.map = dev.tex[pose]; b.material.needsUpdate = true; a.material.needsUpdate = true;
     dev.pose = pose; dev.fondu = apparait ? 1 : 0;   // à la réapparition, pas de fondu entre deux poses
   }
   dev.fondu = Math.min(1, dev.fondu + 0.045);
-  a.material.opacity = (1 - dev.fondu) * vis; b.material.opacity = dev.fondu * vis;
+  a.material.opacity = 1 - dev.fondu; b.material.opacity = dev.fondu;
   const img = b.material.map.image;
   const ratio = img && img.width ? img.width / img.height : 1;
   const h = 0.3;
@@ -343,24 +360,28 @@ function animerDev({ temps }) {
   // frappe au clavier : petits rebonds rapides et léger balancement, comme les deux bras qui tapent
   const rebond = frappe ? Math.abs(Math.sin(temps * 15)) * 0.007 : 0;
   const balance = frappe ? Math.sin(temps * 7.5) * 0.035 : 0;
-  // téléportation : il s'étire en lumière et s'amincit
-  const fin = 0.12 + 0.88 * vis, etire = 1 + (1 - vis) * 0.5;
+  // téléportation : il s'enfonce dans son anneau, coupé au plan de l'anneau (pas d'effet hologramme)
+  const dd = sink * h, cache = Math.max(0, dd - 0.025) / h;   // part du bas de l'image sous l'anneau
+  for (const k in dev.tex) { dev.tex[k].repeat.set(1, 1); dev.tex[k].offset.set(0, 0); }
   for (const p of dev.plans) {
-    p.scale.set(h * ratio * fin, h * etire, 1);
-    p.position.y = 0.025 + monte + rebond + (h * etire) / 2;
+    const t = p.material.map; t.repeat.set(1, 1 - cache); t.offset.set(0, cache);
+    p.scale.set(h * ratio, Math.max(0.0001, h * (1 - cache)), 1);
+    p.position.y = (cache > 0 ? 0 : 0.025 - dd) + monte + rebond + (h * (1 - cache)) / 2;
     p.rotation.z = balance;
+    p.visible = cache < 0.995;
   }
   // toujours face à la caméra (rotation autour de la verticale seulement)
   const cam = M.camera.position;
   const ry = Math.atan2(cam.x - g.x, cam.z - g.z);
   for (const p of dev.plans) p.rotation.y = ry;
   dev.groupe.scale.setScalar(Math.max(0.001, lisse((temps - 1.0) / 0.7)));   // Dev arrive après les meubles
+  const R = ring || { s: 1, b: 1, o: 1 };
   const pul = 1 + Math.sin(temps * 2.4) * 0.05;
-  dev.anneau.scale.setScalar(pul * (1 + (1 - vis) * 0.9)); dev.anneau.position.y = 0;
-  dev.anneau.material.opacity = 0.35 + 0.65 * vis;
-  dev.halo.position.y = -0.002; dev.halo.scale.setScalar(pul * (1 + (1 - vis) * 0.8));
-  dev.colonne.material.opacity = Math.sin(Math.PI * (1 - vis)) * 0.45;
-  dev.colonne.scale.set(1, 0.4 + 0.6 * (1 - vis), 1);
+  dev.anneau.scale.set(pul * R.s, pul * (R.s < 1 ? 0.3 + 0.7 * (R.s - 0.05) / 0.95 : R.s), 1); dev.anneau.position.y = 0;
+  dev.anneau.material.color.set(0x34d8ff).multiplyScalar(R.b);
+  dev.anneau.material.opacity = (0.35 + 0.65 * R.o) * (R.o > 0 ? 1 : 0);
+  dev.anneau.visible = R.o > 0.01;
+  dev.halo.position.y = -0.002; dev.halo.scale.setScalar(pul * R.s * (R.b > 1 ? 1 : 1)); dev.halo.material.opacity = R.o;
 }
 
 // ---------- plans de caméra (une étape = un plan) ----------
